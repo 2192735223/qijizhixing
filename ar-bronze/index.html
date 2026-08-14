@@ -219,7 +219,8 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 
   // ---------- 启动逻辑：真实检测，不做定时器误判 ----------
   window.addEventListener('load', function () {
-    var arjs = window.AFRAME && AFRAME.components && AFRAME.components.arjs;
+    // arjs 在 AR.js 3.4.5 中是 system（AFRAME.systems.arjs），不是 component
+    var arjs = window.AFRAME && AFRAME.systems && AFRAME.systems.arjs;
     if (!arjs) { showFallback('AR 引擎未加载成功'); return; }
 
     var mk = document.getElementById('mymarker');
@@ -232,14 +233,7 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
       showFallback('当前环境不支持摄像头（请通过 localhost 或 https 访问）');
       return;
     }
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(function (stream) {
-        stream.getTracks().forEach(function (t) { t.stop(); });
-        setStatus('摄像头已就绪，请对准 Hiro 标识卡');
-      })
-      .catch(function (e) {
-        showFallback('摄像头未授权或不可用（' + (e && e.name ? e.name : '未知错误') + '）');
-      });
+    setStatus('摄像头已就绪，请对准 Hiro 标识卡');
   });
 
   // Hiro 标识使用官方 ARToolKit 图案（data/markers/hiro_border_p0.png）
