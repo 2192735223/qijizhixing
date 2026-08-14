@@ -22,7 +22,7 @@ header .sub{font-size:.75rem;color:#8a7a60;margin-top:.6rem;letter-spacing:1px}
 .card .label{font-size:.95rem;font-weight:600;letter-spacing:1px}
 .card .badge{font-size:.68rem;background:#4a3820;padding:.15rem .6rem;border-radius:10px;color:#c4a970}
 .card .qr{width:80px;height:80px;margin-top:.3rem;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.card .qr canvas,.card .qr img{display:block;width:80px;height:80px}
+.card .qr canvas,.card .qr img{display:block;width:80px;height:80px;border-radius:6px}
 .qrcode-hint{font-size:.65rem;color:#8a7a60;margin-top:.2rem}
 .enter{text-align:center;padding:.5rem 1rem 2rem}
 .enter .tip{font-size:.8rem;color:#8a7a60;margin-bottom:.5rem}
@@ -46,42 +46,42 @@ footer{text-align:center;padding:2rem 1rem;font-size:.75rem;color:#6a5a40;line-h
     <div class="icon">🏺</div>
     <div class="label">AR 青铜鼎</div>
     <div class="badge">WebAR · 真 AR</div>
-    <div class="qr"><canvas id="qr0" width="80" height="80"></canvas></div>
+    <div class="qr" id="qr0"></div>
     <div class="qrcode-hint">扫码进入 AR 体验</div>
   </a>
   <a class="card" href="gu-city/" target="_blank">
     <div class="icon">🏯</div>
     <div class="label">齐国故城</div>
     <div class="badge">3D 复原</div>
-    <div class="qr"><canvas id="qr1" width="80" height="80"></canvas></div>
+    <div class="qr" id="qr1"></div>
     <div class="qrcode-hint">扫码查看故城复原</div>
   </a>
   <a class="card" href="guanzhong/" target="_blank">
     <div class="icon">📜</div>
     <div class="label">管仲改革</div>
     <div class="badge">时间轴</div>
-    <div class="qr"><canvas id="qr2" width="80" height="80"></canvas></div>
+    <div class="qr" id="qr2"></div>
     <div class="qrcode-hint">扫码了解改革历程</div>
   </a>
   <a class="card" href="jixia/" target="_blank">
     <div class="icon">🎓</div>
     <div class="label">稷下学宫</div>
     <div class="badge">答题互动</div>
-    <div class="qr"><canvas id="qr3" width="80" height="80"></canvas></div>
+    <div class="qr" id="qr3"></div>
     <div class="qrcode-hint">扫码参与答题</div>
   </a>
   <a class="card" href="cuju/" target="_blank">
     <div class="icon">⚽</div>
     <div class="label">蹴鞠</div>
     <div class="badge">点击互动</div>
-    <div class="qr"><canvas id="qr4" width="80" height="80"></canvas></div>
+    <div class="qr" id="qr4"></div>
     <div class="qrcode-hint">扫码玩蹴鞠</div>
   </a>
   <a class="card" href="youth/" target="_blank">
     <div class="icon">🏅</div>
     <div class="label">青春传承</div>
     <div class="badge">电子证书</div>
-    <div class="qr"><canvas id="qr5" width="80" height="80"></canvas></div>
+    <div class="qr" id="qr5"></div>
     <div class="qrcode-hint">扫码获取证书</div>
   </a>
 </div>
@@ -122,6 +122,11 @@ footer{text-align:center;padding:2rem 1rem;font-size:.75rem;color:#6a5a40;line-h
     if (!c) return;
     try {
       new QRCode(c, { text: text, width: size, height: size, colorDark: "#1a1209", colorLight: "#ffffff" });
+      var child = c.querySelector('canvas, img');
+      if (child) {
+        child.style.width = size + 'px';
+        child.style.height = size + 'px';
+      }
     } catch (e) {
       fallbackQR(c, size, idx);
     }
