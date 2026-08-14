@@ -12,33 +12,33 @@
 <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.js" onerror="window.__arjsLoadFailed=1"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#1a1209;color:#f0e6d3;overflow:hidden;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#080604;color:#d4c5a9;overflow:hidden;-webkit-tap-highlight-color:transparent}
 a-scene{position:fixed;inset:0;width:100vw;height:100vh;z-index:1}
-.hint{position:fixed;top:calc(1rem + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:rgba(42,31,18,.9);padding:.55rem .9rem;border-radius:8px;font-size:.8rem;color:#c4a970;z-index:100;text-align:center;border:1px solid #b8860b;max-width:66%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.print-btn{position:fixed;top:calc(1rem + env(safe-area-inset-top,0px));right:1rem;background:#b8860b;color:#1a1209;border:none;padding:.5rem .8rem;border-radius:6px;font-weight:600;cursor:pointer;z-index:110;font-size:.78rem;white-space:nowrap}
+.hint{position:fixed;top:calc(1rem + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:rgba(20,16,12,.9);padding:.5rem .9rem;border-radius:8px;font-size:.75rem;color:#8a7a60;z-index:100;text-align:center;border:1px solid rgba(205,127,50,.15);max-width:66%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;backdrop-filter:blur(4px)}
+.print-btn{position:fixed;top:calc(1rem + env(safe-area-inset-top,0px));right:1rem;background:rgba(20,16,12,.9);color:#8a7a60;border:1px solid rgba(205,127,50,.15);padding:.45rem .8rem;border-radius:8px;font-weight:600;cursor:pointer;z-index:110;font-size:.72rem;white-space:nowrap;backdrop-filter:blur(4px);transition:all .3s ease}
 .print-btn:hover{background:#e8c97a}
-.status{position:fixed;bottom:calc(1rem + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:rgba(42,31,18,.92);border:1px solid #b8860b;border-radius:8px;padding:.5rem .9rem;font-size:.78rem;color:#c4a970;z-index:100;text-align:center;max-width:88%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.loading{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(26,18,9,.93);z-index:300}
-.loading .spin{width:44px;height:44px;border:4px solid #4a3820;border-top-color:#b8860b;border-radius:50%;animation:rot 1s linear infinite}
-.loading p{color:#c4a970;font-size:.9rem;margin-top:1rem;letter-spacing:2px}
+.status{position:fixed;bottom:calc(1rem + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:rgba(20,16,12,.9);border:1px solid rgba(205,127,50,.12);border-radius:8px;padding:.45rem .9rem;font-size:.72rem;color:#6a5a40;z-index:100;text-align:center;max-width:88%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;backdrop-filter:blur(4px)}
+.loading{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(8,6,4,.96);z-index:300}
+.loading .spin{width:40px;height:40px;border:3px solid rgba(74,58,40,.2);border-top-color:rgba(205,127,50,.4);border-radius:50%;animation:rot 1s linear infinite}
+.loading p{color:#6a5a40;font-size:.85rem;margin-top:1rem;letter-spacing:2px}
 @keyframes rot{to{transform:rotate(360deg)}}
-.marker-page{display:none;position:fixed;inset:0;background:#f0e6d3;color:#1a1209;padding:2rem;z-index:400;overflow:auto}
+.marker-page{display:none;position:fixed;inset:0;background:linear-gradient(165deg,#f0e6d3,#e8dcc8);color:#3a2a1a;padding:2rem;z-index:400;overflow:auto}
 .marker-page.show{display:block}
-.marker-page h2{color:#1a1209;text-align:center;margin-bottom:1rem}
+.marker-page h2{color:#6b4423;text-align:center;margin-bottom:1rem;letter-spacing:2px}
 .marker-page svg{display:block;margin:1rem auto;max-width:90vw;border:2px solid #1a1209}
-.marker-page .tip{color:#6a5035;font-size:.85rem;text-align:center;margin-top:1rem;line-height:1.8}
-.marker-page .close{position:fixed;top:1rem;right:1rem;background:#1a1209;color:#f0e6d3;border:none;padding:.5rem 1rem;border-radius:6px;cursor:pointer}
-.fallback{position:fixed;inset:0;display:none;background:#1a1209;z-index:200}
+.marker-page .tip{color:#6a5a40;font-size:.8rem;text-align:center;margin-top:1rem;line-height:1.8}
+.marker-page .close{position:fixed;top:1rem;right:1rem;background:rgba(8,6,4,.9);color:#d4c5a9;border:1px solid rgba(74,58,40,.2);padding:.45rem 1rem;border-radius:8px;cursor:pointer;font-size:.85rem}
+.fallback{position:fixed;inset:0;display:none;background:#080604;z-index:200}
 .fallback.show{display:flex;flex-direction:column;align-items:center;justify-content:center}
 .fallback canvas{width:90vw;height:60vh;border-radius:8px;display:block}
-.fallback p{margin-top:1rem;color:#b8a080;font-size:.85rem;text-align:center;padding:0 1rem}
-.back{position:fixed;bottom:calc(1rem + env(safe-area-inset-bottom,0px));left:1rem;color:#c4a970;text-decoration:none;font-size:.8rem;background:rgba(42,31,18,.9);border:1px solid #4a3820;padding:.45rem .9rem;border-radius:6px;z-index:100}
+.fallback p{margin-top:1rem;color:#6a5a40;font-size:.8rem;text-align:center;padding:0 1rem}
+.back{position:fixed;bottom:calc(1rem + env(safe-area-inset-bottom,0px));left:1rem;color:#6a5a40;text-decoration:none;font-size:.75rem;background:rgba(20,16,12,.9);border:1px solid rgba(74,58,40,.2);padding:.4rem .8rem;border-radius:8px;z-index:100;transition:all .3s ease;backdrop-filter:blur(4px)}
 </style>
 </head>
 <body>
 <div class="hint">📷 对准 Hiro 标识卡体验 AR</div>
 <button class="print-btn" onclick="document.getElementById('mp').classList.add('show')">🖨️ 打印 Hiro 标识</button>
-<div id="status" class="status">正在启动…</div>
+<div id="status" class="status">正在初始化 AR…</div>
 
 
 
