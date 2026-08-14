@@ -1,101 +1,220 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>齐迹智行 · 齐文化 AR 互动展示</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%}
-body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#1a1209;color:#f0e6d3;min-height:100vh;background-image:radial-gradient(ellipse at 30% 20%,#3d2b1a 0%,#1a1209 70%)}
-header{text-align:center;padding:2.6rem 1rem 1.4rem;background:linear-gradient(180deg,rgba(60,40,20,.6) 0%,transparent 100%)}
-header .emblem{font-size:2.6rem;line-height:1}
-header h1{font-size:2.1rem;font-weight:700;background:linear-gradient(135deg,#e8c97a,#b8860b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:8px;margin-top:.6rem}
-header .slogan{font-size:.95rem;color:#c4a970;margin-top:.6rem;letter-spacing:3px}
-header .sub{font-size:.75rem;color:#8a7a60;margin-top:.6rem;letter-spacing:1px}
-.divider{width:60px;height:2px;background:linear-gradient(90deg,transparent,#b8860b,transparent);margin:1.2rem auto 0}
-.section-title{text-align:center;font-size:.95rem;font-weight:600;color:#c4a970;margin:1.4rem 0 .6rem;letter-spacing:3px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;padding:1.2rem;max-width:840px;margin:0 auto}
-.card{background:linear-gradient(145deg,#2a1f12,#1e160c);border:1px solid #4a3820;border-radius:12px;padding:1.2rem .8rem;text-align:center;cursor:pointer;transition:all .3s ease;text-decoration:none;color:#f0e6d3;display:flex;flex-direction:column;align-items:center;gap:.5rem}
-.card:hover,.card:active{border-color:#b8860b;transform:translateY(-3px);box-shadow:0 8px 24px rgba(184,134,11,.2)}
-.card .icon{font-size:2.3rem;line-height:1}
-.card .label{font-size:.95rem;font-weight:600;letter-spacing:1px}
-.card .badge{font-size:.68rem;background:#4a3820;padding:.15rem .6rem;border-radius:10px;color:#c4a970}
-.card .qr{width:80px;height:80px;margin-top:.3rem;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+/* ===== Reset & Base ===== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;background:#0f0a06;color:#f0e6d3;min-height:100vh;overflow-x:hidden;background-image:radial-gradient(ellipse at 40% 15%,rgba(61,43,26,.5) 0%,transparent 60%),radial-gradient(ellipse at 80% 85%,rgba(40,28,15,.4) 0%,transparent 50%)}
+
+/* ===== Decorative Background Particles ===== */
+.bg-particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
+.bg-particles span{position:absolute;display:block;width:3px;height:3px;background:rgba(184,134,11,.15);border-radius:50%;animation:floatParticle linear infinite}
+.bg-particles span:nth-child(1){left:10%;top:10%;animation-duration:18s;animation-delay:0s;width:4px;height:4px}
+.bg-particles span:nth-child(2){left:25%;top:30%;animation-duration:22s;animation-delay:2s;width:2px;height:2px}
+.bg-particles span:nth-child(3){left:45%;top:15%;animation-duration:20s;animation-delay:4s;width:3px;height:3px}
+.bg-particles span:nth-child(4){left:65%;top:40%;animation-duration:25s;animation-delay:1s;width:2px;height:2px}
+.bg-particles span:nth-child(5){left:80%;top:20%;animation-duration:19s;animation-delay:3s;width:4px;height:4px}
+.bg-particles span:nth-child(6){left:15%;top:60%;animation-duration:23s;animation-delay:5s;width:3px;height:3px}
+.bg-particles span:nth-child(7){left:55%;top:70%;animation-duration:21s;animation-delay:0s;width:2px;height:2px}
+.bg-particles span:nth-child(8){left:90%;top:55%;animation-duration:17s;animation-delay:4s;width:3px;height:3px}
+.bg-particles span:nth-child(9){left:35%;top:85%;animation-duration:24s;animation-delay:2s;width:2px;height:2px}
+.bg-particles span:nth-child(10){left:72%;top:80%;animation-duration:20s;animation-delay:3s;width:4px;height:4px}
+@keyframes floatParticle{0%{transform:translateY(0) rotate(0deg);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-100vh) rotate(720deg);opacity:0}}
+
+/* ===== Decorative Top Border Pattern ===== */
+.top-border{position:fixed;top:0;left:0;width:100%;height:4px;z-index:100;background:linear-gradient(90deg,transparent 0%,#b8860b 15%,#e8c97a 30%,#b8860b 50%,#e8c97a 70%,#b8860b 85%,transparent 100%);background-size:200% 100%;animation:shimmerBorder 4s ease-in-out infinite}
+@keyframes shimmerBorder{0%,100%{background-position:200% 0}50%{background-position:0% 0}}
+
+/* ===== Hero Section ===== */
+.hero{position:relative;z-index:1;text-align:center;padding:3.5rem 1.2rem 2rem;background:linear-gradient(180deg,rgba(40,28,15,.7) 0%,transparent 100%);overflow:hidden}
+.hero::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(184,134,11,.08) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'☰ ☰ ☰';position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-size:1.6rem;letter-spacing:12px;color:rgba(184,134,11,.08);pointer-events:none;font-family:serif}
+.hero .emblem{font-size:3rem;line-height:1;display:block;animation:floatEmblem 4s ease-in-out infinite;filter:drop-shadow(0 4px 20px rgba(184,134,11,.3))}
+@keyframes floatEmblem{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.hero h1{font-size:2.4rem;font-weight:800;background:linear-gradient(135deg,#f0dca0 0%,#b8860b 40%,#e8c97a 60%,#a0750a 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:10px;margin-top:.6rem;position:relative;display:inline-block}
+.hero h1::after{content:'';display:block;width:40%;height:2px;background:linear-gradient(90deg,transparent,#b8860b,transparent);margin:.5rem auto 0;-webkit-text-fill-color:initial}
+.hero .slogan{font-size:1rem;color:#c4a970;margin-top:.8rem;letter-spacing:4px;font-weight:300}
+.hero .slogan span{display:inline-block;animation:fadeInUp .8s ease forwards;opacity:0}
+.hero .slogan span:nth-child(1){animation-delay:.2s}
+.hero .slogan span:nth-child(2){animation-delay:.4s}
+.hero .slogan span:nth-child(3){animation-delay:.6s}
+.hero .slogan span:nth-child(4){animation-delay:.8s}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.hero .sub{font-size:.75rem;color:#6a5a40;margin-top:.8rem;letter-spacing:2px;border:1px solid rgba(106,90,64,.3);display:inline-block;padding:.2rem 1rem;border-radius:20px;backdrop-filter:blur(4px)}
+
+/* ===== Decorative Divider ===== */
+.divider-wrap{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:.8rem;padding:.5rem 1rem;margin:.5rem 0}
+.divider-wrap .line{flex:1;max-width:80px;height:1px;background:linear-gradient(90deg,transparent,#b8860b)}
+.divider-wrap .line:last-child{background:linear-gradient(90deg,#b8860b,transparent)}
+.divider-wrap .diamond{width:8px;height:8px;background:#b8860b;transform:rotate(45deg);opacity:.6}
+
+/* ===== Section Title ===== */
+.section-header{position:relative;z-index:1;text-align:center;padding:1rem 1rem .5rem}
+.section-header .label{display:inline-flex;align-items:center;gap:.5rem;font-size:.75rem;color:#8a7a60;letter-spacing:4px;text-transform:uppercase;border:1px solid rgba(138,122,96,.25);padding:.2rem 1rem;border-radius:20px;backdrop-filter:blur(4px)}
+.section-header .label::before,.section-header .label::after{content:'◆';font-size:.4rem;color:#b8860b}
+.section-header h2{font-size:1.3rem;font-weight:700;color:#e8c97a;margin-top:.6rem;letter-spacing:3px}
+
+/* ===== Card Grid ===== */
+.grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:1rem;padding:1rem 1rem 1.5rem;max-width:860px;margin:0 auto}
+
+/* ===== Card ===== */
+.card{background:linear-gradient(155deg,rgba(42,31,18,.85),rgba(30,22,12,.9));border:1px solid rgba(74,56,32,.6);border-radius:14px;padding:1.4rem .8rem 1rem;text-align:center;cursor:pointer;transition:all .4s cubic-bezier(.25,.46,.45,.94);text-decoration:none;color:#f0e6d3;display:flex;flex-direction:column;align-items:center;gap:.4rem;position:relative;overflow:hidden;backdrop-filter:blur(6px)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(184,134,11,.4),transparent);opacity:0;transition:opacity .4s ease}
+.card::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 0%,rgba(184,134,11,.03) 0%,transparent 60%);opacity:0;transition:opacity .6s ease;pointer-events:none}
+.card:hover,.card:active{transform:translateY(-5px) scale(1.02);border-color:#b8860b;box-shadow:0 12px 40px rgba(184,134,11,.18),inset 0 1px 0 rgba(232,201,122,.1)}
+.card:hover::before,.card:active::before{opacity:1}
+.card:hover::after,.card:active::after{opacity:1}
+.card .card-icon-wrap{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,rgba(184,134,11,.15),rgba(42,31,18,.8));border:1px solid rgba(184,134,11,.25);display:flex;align-items:center;justify-content:center;transition:all .4s ease;margin-bottom:.1rem}
+.card:hover .card-icon-wrap{background:linear-gradient(135deg,rgba(184,134,11,.25),rgba(60,40,20,.8));border-color:#b8860b;box-shadow:0 0 20px rgba(184,134,11,.15);transform:scale(1.08)}
+.card .icon{font-size:1.6rem;line-height:1}
+.card .label{font-size:.95rem;font-weight:600;letter-spacing:2px;transition:color .3s ease}
+.card:hover .label{color:#e8c97a}
+.card .badge{font-size:.65rem;background:linear-gradient(135deg,rgba(74,56,32,.8),rgba(55,40,22,.8));padding:.15rem .7rem;border-radius:10px;color:#c4a970;border:1px solid rgba(74,56,32,.4);transition:all .3s ease}
+.card:hover .badge{background:linear-gradient(135deg,rgba(74,56,32,.9),rgba(60,42,26,.9));border-color:rgba(184,134,11,.3);color:#e8c97a}
+.card .qr{width:80px;height:80px;margin-top:.2rem;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.3);transition:box-shadow .3s ease;border:1px solid rgba(255,255,255,.08)}
+.card:hover .qr{box-shadow:0 4px 16px rgba(0,0,0,.4),0 0 0 1px rgba(184,134,11,.2)}
 .card .qr canvas,.card .qr img{display:block;width:80px;height:80px;border-radius:6px}
-.qrcode-hint{font-size:.65rem;color:#8a7a60;margin-top:.2rem}
-.enter{text-align:center;padding:.5rem 1rem 2rem}
-.enter .tip{font-size:.8rem;color:#8a7a60;margin-bottom:.5rem}
-.enter .btn{display:inline-flex;padding:.6rem 1.5rem;flex-direction:row;gap:.6rem;background:linear-gradient(145deg,#2a1f12,#1e160c);border:1px solid #b8860b;border-radius:8px;color:#f0e6d3;text-decoration:none;font-size:.88rem;font-weight:600;align-items:center}
-.enter .btn:hover{border-color:#e8c97a;box-shadow:0 4px 16px rgba(184,134,11,.3)}
-.enter .btn span.ic{font-size:1.2rem}
-footer{text-align:center;padding:2rem 1rem;font-size:.75rem;color:#6a5a40;line-height:1.7}
+.qrcode-hint{font-size:.62rem;color:#6a5a40;margin-top:.1rem;transition:color .3s ease;letter-spacing:1px}
+.card:hover .qrcode-hint{color:#8a7a60}
+
+/* ===== Cards Animation ===== */
+.card{opacity:0;transform:translateY(30px);animation:cardFadeIn .6s ease forwards}
+.card:nth-child(1){animation-delay:.1s}
+.card:nth-child(2){animation-delay:.2s}
+.card:nth-child(3){animation-delay:.3s}
+.card:nth-child(4){animation-delay:.4s}
+.card:nth-child(5){animation-delay:.5s}
+.card:nth-child(6){animation-delay:.6s}
+@keyframes cardFadeIn{to{opacity:1;transform:translateY(0)}}
+
+/* ===== CTA Section ===== */
+.cta-section{position:relative;z-index:1;text-align:center;padding:1rem 1rem 2.5rem}
+.cta-section .tip{font-size:.8rem;color:#6a5a40;margin-bottom:1rem;letter-spacing:1px}
+.cta-section .btn-group{display:flex;flex-wrap:wrap;justify-content:center;gap:.8rem}
+.cta-section .btn{display:inline-flex;align-items:center;gap:.6rem;padding:.7rem 1.8rem;background:linear-gradient(145deg,rgba(42,31,18,.9),rgba(30,22,12,.95));border:1px solid rgba(184,134,11,.5);border-radius:10px;color:#f0e6d3;text-decoration:none;font-size:.88rem;font-weight:600;letter-spacing:2px;transition:all .35s cubic-bezier(.25,.46,.45,.94);position:relative;overflow:hidden}
+.cta-section .btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(232,201,122,.08),transparent);transition:left .5s ease}
+.cta-section .btn:hover{border-color:#e8c97a;transform:translateY(-2px);box-shadow:0 8px 30px rgba(184,134,11,.2)}
+.cta-section .btn:hover::before{left:100%}
+.cta-section .btn .ic{font-size:1.2rem}
+.cta-section .btn-primary{background:linear-gradient(145deg,rgba(184,134,11,.2),rgba(100,70,8,.15));border-color:#b8860b;box-shadow:0 0 20px rgba(184,134,11,.08)}
+.cta-section .btn-primary:hover{background:linear-gradient(145deg,rgba(184,134,11,.25),rgba(120,85,10,.2));box-shadow:0 8px 30px rgba(184,134,11,.25),0 0 40px rgba(184,134,11,.08)}
+
+/* ===== Footer ===== */
+footer{position:relative;z-index:1;text-align:center;padding:2rem 1rem;font-size:.72rem;color:#4a3820;line-height:1.8;border-top:1px solid rgba(74,56,32,.2);margin-top:1rem}
+footer .footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem 1rem;margin-bottom:.6rem}
+footer .footer-links a{color:#6a5a40;text-decoration:none;transition:color .3s ease}
+footer .footer-links a:hover{color:#c4a970}
+footer .copyright{color:#4a3820}
+
+/* ===== Responsive ===== */
+@media(max-width:480px){.hero{padding:2.5rem .8rem 1.5rem}.hero h1{font-size:1.9rem;letter-spacing:6px}.hero .slogan{font-size:.85rem;letter-spacing:2px}.grid{grid-template-columns:repeat(2,1fr);gap:.7rem;padding:.8rem}.card{padding:1rem .5rem .8rem}.card .card-icon-wrap{width:44px;height:44px}.card .icon{font-size:1.3rem}.card .label{font-size:.85rem}.cta-section .btn{padding:.6rem 1.2rem;font-size:.82rem}}
+@media(min-width:600px){.grid{grid-template-columns:repeat(3,1fr);gap:1.2rem;padding:1.2rem 1.5rem 2rem}.hero h1{font-size:2.8rem;letter-spacing:14px}.hero{padding:4.5rem 1.5rem 2.5rem}}
+@media(min-width:900px){.grid{max-width:920px;gap:1.4rem}.hero h1{font-size:3.2rem}}
 </style>
 </head>
 <body>
-<header>
-  <div class="emblem">🏺</div>
+<div class="bg-particles">
+  <span></span><span></span><span></span><span></span><span></span>
+  <span></span><span></span><span></span><span></span><span></span>
+</div>
+<div class="top-border"></div>
+
+<section class="hero">
+  <span class="emblem">🏺</span>
   <h1>齐迹智行</h1>
-  <div class="slogan">数字赋能齐文脉 · 青春传承齐风骨</div>
-  <div class="sub">2026 年暑假社会实践 · 齐迹智行实践团 · 山东理工大学</div>
-  <div class="divider"></div>
-</header>
-<div class="section-title">扫码体验六大模块</div>
+  <div class="slogan">
+    <span>数字赋能</span><span>齐文脉</span>
+    <span>·</span>
+    <span></span>
+    <span>青春传承</span><span>齐风骨</span>
+  </div>
+  <div class="sub">2026 暑假社会实践 · 齐迹智行实践团 · 山东理工大学</div>
+</section>
+
+<div class="divider-wrap">
+  <span class="line"></span>
+  <span class="diamond"></span>
+  <span class="line"></span>
+</div>
+
+<div class="section-header">
+  <div class="label">互动体验</div>
+  <h2>扫码体验六大模块</h2>
+</div>
+
 <div class="grid">
   <a class="card" href="ar-bronze/" target="_blank">
-    <div class="icon">🏺</div>
+    <div class="card-icon-wrap"><span class="icon">🏺</span></div>
     <div class="label">AR 青铜鼎</div>
     <div class="badge">WebAR · 真 AR</div>
     <div class="qr" id="qr0"></div>
     <div class="qrcode-hint">扫码进入 AR 体验</div>
   </a>
   <a class="card" href="gu-city/" target="_blank">
-    <div class="icon">🏯</div>
+    <div class="card-icon-wrap"><span class="icon">🏯</span></div>
     <div class="label">齐国故城</div>
     <div class="badge">3D 复原</div>
     <div class="qr" id="qr1"></div>
     <div class="qrcode-hint">扫码查看故城复原</div>
   </a>
   <a class="card" href="guanzhong/" target="_blank">
-    <div class="icon">📜</div>
+    <div class="card-icon-wrap"><span class="icon">📜</span></div>
     <div class="label">管仲改革</div>
     <div class="badge">时间轴</div>
     <div class="qr" id="qr2"></div>
     <div class="qrcode-hint">扫码了解改革历程</div>
   </a>
   <a class="card" href="jixia/" target="_blank">
-    <div class="icon">🎓</div>
+    <div class="card-icon-wrap"><span class="icon">🎓</span></div>
     <div class="label">稷下学宫</div>
     <div class="badge">答题互动</div>
     <div class="qr" id="qr3"></div>
     <div class="qrcode-hint">扫码参与答题</div>
   </a>
   <a class="card" href="cuju/" target="_blank">
-    <div class="icon">⚽</div>
+    <div class="card-icon-wrap"><span class="icon">⚽</span></div>
     <div class="label">蹴鞠</div>
     <div class="badge">点击互动</div>
     <div class="qr" id="qr4"></div>
     <div class="qrcode-hint">扫码玩蹴鞠</div>
   </a>
   <a class="card" href="youth/" target="_blank">
-    <div class="icon">🏅</div>
+    <div class="card-icon-wrap"><span class="icon">🏅</span></div>
     <div class="label">青春传承</div>
     <div class="badge">电子证书</div>
     <div class="qr" id="qr5"></div>
     <div class="qrcode-hint">扫码获取证书</div>
   </a>
 </div>
-<div class="enter">
-  <div class="tip">演示建议：手机浏览器访问，电脑点击卡片直接进入</div>
-  <a class="btn" href="ar-bronze/" target="_blank">
-    <span class="ic">🏺</span>
-    <span>进入 AR 青铜鼎体验</span>
-  </a>
+
+<div class="cta-section">
+  <div class="tip">💡 手机扫码体验 · 电脑点击卡片直接进入</div>
+  <div class="btn-group">
+    <a class="btn btn-primary" href="ar-bronze/" target="_blank">
+      <span class="ic">🏺</span>
+      <span>进入 AR 青铜鼎体验</span>
+    </a>
+    <a class="btn" href="https://github.com/2192735223/qijizhixing" target="_blank" rel="noopener">
+      <span class="ic">📂</span>
+      <span>项目源码</span>
+    </a>
+  </div>
 </div>
+
 <footer>
-  资源来源：Sketchfab (CC BY) · 大都会博物馆 (Public Domain) · Wikimedia Commons (CC BY-SA 3.0) · Poly Haven (CC0)<br>
-  齐迹智行实践团 · 山东理工大学 · 2026
+  <div class="footer-links">
+    <a href="https://sketchfab.com" target="_blank" rel="noopener">Sketchfab</a>
+    <a href="https://www.metmuseum.org" target="_blank" rel="noopener">大都会博物馆</a>
+    <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a>
+    <a href="https://polyhaven.com" target="_blank" rel="noopener">Poly Haven</a>
+  </div>
+  <div class="copyright">齐迹智行实践团 · 山东理工大学 · 2026</div>
 </footer>
+
 <script src="libs/qrcode.min.js"></script>
 <script>
 (function () {
