@@ -122,11 +122,11 @@ canvas{display:block;width:100%;height:100%}
   scene.add(sun);
 
   // ---------- 大地与鞠场 ----------
-  var earth = new THREE.Mesh(new THREE.PlaneGeometry(90, 64), mat(tex('assets/ground.jpg', 22, 15)));
+  var earth = new THREE.Mesh(new THREE.PlaneGeometry(90, 64), mat(tex('assets/ground.jpg', 22, 15), { color: 0xa8824e }));
   earth.rotation.x = -Math.PI / 2;
   add(earth);
-  // 鞠场（稍高的夯土台地）
-  box(20, 0.16, 12.5, 0, 0.06, 0, groundMat);
+  // 鞠场（明显凸起的夯土台地，颜色略深于大地）
+  box(20, 0.5, 12.5, 0, 0.25, 0, mat(groundTex, { color: 0x8a6438 }));
 
   // ---------- 风流眼（鞠门） ----------
   var EYE_Y = 2.15, EYE_Z = -7, HALF = 1.65;
@@ -215,7 +215,7 @@ canvas{display:block;width:100%;height:100%}
   );
   seams.scale.y = 0.72;
   ball.add(core, seams);
-  var START = new THREE.Vector3(0, 0.42, 4.2);
+  var START = new THREE.Vector3(0, 0.74, 4.2);
   ball.position.copy(START);
   scene.add(ball);
 
