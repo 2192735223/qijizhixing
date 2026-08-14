@@ -39,15 +39,7 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 <button class="print-btn" onclick="document.getElementById('mp').classList.add('show')">🖨️ 打印 Hiro 标识</button>
 <div id="status" class="status">正在启动…</div>
 
-<a-scene id="arscene" embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono; cameraParametersUrl: ../data/data/camera_para.dat;">
-  <a-marker id="mymarker" type="pattern" url="../data/data/patt.hiro">
-    <a-entity id="ding" ding-model scale="0.55 0.55 0.55"></a-entity>
-    <a-text value="齐器之美 · 青铜礼器 · 春秋战国" position="0 1.3 0" color="#e8c97a" align="center" width="2.4"></a-text>
-  </a-marker>
-  <a-entity light="type: hemisphere; color: #fff7e8; groundColor: #3a2a1a; intensity: 1.1"></a-entity>
-  <a-entity light="type: directional; color: #fff; intensity: 0.8" position="2 4 3"></a-entity>
-  <a-entity camera></a-entity>
-</a-scene>
+
 
 <div id="fallback" class="fallback">
   <canvas id="view3d"></canvas>
@@ -263,5 +255,16 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
   // Hiro 标识使用官方 ARToolKit 图案（data/markers/hiro_border_p0.png）
 })();
 </script>
+
+<a-scene id="arscene" embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono; cameraParametersUrl: ../data/data/camera_para.dat;">
+  <a-marker id="mymarker" type="pattern" url="../data/data/patt.hiro">
+    <a-entity id="ding" ding-model scale="0.55 0.55 0.55"></a-entity>
+    <a-text value="齐器之美 · 青铜礼器 · 春秋战国" position="0 1.3 0" color="#e8c97a" align="center" width="2.4"></a-text>
+  </a-marker>
+  <a-entity light="type: hemisphere; color: #fff7e8; groundColor: #3a2a1a; intensity: 1.1"></a-entity>
+  <a-entity light="type: directional; color: #fff; intensity: 0.8" position="2 4 3"></a-entity>
+  <a-entity camera></a-entity>
+</a-scene>
+
 </body>
 </html>
