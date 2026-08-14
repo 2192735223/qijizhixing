@@ -1,34 +1,43 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
 <title>管仲改革 · 齐迹智行</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#1a1209;color:#f0e6d3;min-height:100vh;background-image:linear-gradient(180deg,#2a1f12 0%,#1a1209 100%);-webkit-tap-highlight-color:transparent}
-header{text-align:center;padding:calc(1.5rem + env(safe-area-inset-top,0px)) 1rem 1rem}
-header h1{font-size:1.4rem;color:#e8c97a;letter-spacing:4px}
-header p{font-size:.78rem;color:#b8a080;margin-top:.4rem;letter-spacing:2px}
-.timeline{max-width:600px;margin:0 auto;padding:1rem 1rem 2rem;position:relative}
-.timeline::before{content:"";position:absolute;left:1.5rem;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#b8860b,#6a5035);border-radius:2px}
-.node{position:relative;padding:0 0 1.2rem 3rem;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;min-height:2.5rem}
-.node .dot{position:absolute;left:1.05rem;top:.4rem;width:1.1rem;height:1.1rem;border-radius:50%;background:#b8860b;border:3px solid #1a1209;box-shadow:0 0 10px rgba(184,134,11,.6);transition:background .3s}
-.node .time{font-size:.7rem;color:#b8860b;letter-spacing:2px;margin-bottom:.2rem}
-.node .title{font-size:1.05rem;font-weight:600;color:#f0e6d3;margin:.2rem 0 .4rem}
-.node .detail{max-height:0;overflow:hidden;background:rgba(42,31,18,.7);border:1px solid #4a3820;border-radius:8px;padding:0 .8rem;font-size:.85rem;color:#c4a970;line-height:1.7;transition:max-height .3s ease,padding .3s ease}
-.node.open .detail{max-height:600px;padding:.8rem}
-.node.open .dot{background:#e8c97a;box-shadow:0 0 14px rgba(232,201,122,.8)}
-.tip{text-align:center;font-size:.72rem;color:#6a5a40;padding:.5rem 0 1.5rem}
-.tip::before{content:"👆 "}
-footer{text-align:center;padding:1rem 1rem calc(1rem + env(safe-area-inset-bottom,0px));font-size:.65rem;color:#6a5a40;border-top:1px solid #2a1f12}
-.back{display:block;text-align:center;margin:0 auto 1.5rem;color:#b8860b;text-decoration:none;font-size:.85rem;border:1px solid #b8860b;padding:.55rem 1.5rem;border-radius:6px;width:fit-content;-webkit-tap-highlight-color:transparent}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#080604;color:#d4c5a9;min-height:100vh;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 120% 40% at 50% 0%,rgba(139,115,85,.08) 0%,transparent 60%),radial-gradient(ellipse 80% 60% at 20% 80%,rgba(74,139,122,.04) 0%,transparent 50%);pointer-events:none;z-index:0}
+header{position:relative;z-index:1;text-align:center;padding:calc(2rem + env(safe-area-inset-top,0px)) 1rem 1rem}
+header .emblem{font-size:2.2rem;display:block;margin-bottom:.4rem;filter:drop-shadow(0 0 20px rgba(205,127,50,.15))}
+header h1{font-size:1.4rem;font-weight:800;color:#d4c5a9;letter-spacing:6px;text-shadow:0 0 30px rgba(205,127,50,.1)}
+header p{font-size:.7rem;color:#6a5a40;margin-top:.4rem;letter-spacing:3px;border:1px solid rgba(74,58,40,.15);display:inline-block;padding:.15rem .8rem;border-radius:12px}
+.timeline{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:1rem 1rem 2rem}
+.timeline::before{content:'';position:absolute;left:1.8rem;top:0;bottom:0;width:2px;background:linear-gradient(180deg,rgba(205,127,50,.3),rgba(74,58,40,.1));border-radius:2px}
+.node{position:relative;padding:0 0 1.2rem 3.5rem;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;min-height:2.5rem}
+.node .dot{position:absolute;left:1.2rem;top:.5rem;width:12px;height:12px;border-radius:50%;background:rgba(205,127,50,.15);border:2px solid rgba(205,127,50,.3);transition:all .4s ease}
+.node .dot::after{content:'';position:absolute;top:2px;left:2px;width:4px;height:4px;border-radius:50%;background:rgba(205,127,50,.4);transition:all .4s ease}
+.node.open .dot{background:rgba(205,127,50,.25);border-color:#cd7f32;box-shadow:0 0 16px rgba(205,127,50,.2)}
+.node.open .dot::after{background:#cd7f32;box-shadow:0 0 8px rgba(205,127,50,.4)}
+.node .time{font-size:.65rem;color:#6a5a40;letter-spacing:2px;margin-bottom:.2rem;transition:color .3s ease}
+.node.open .time{color:#8a7a60}
+.node .title{font-size:1rem;font-weight:600;color:#d4c5a9;margin:.2rem 0 .4rem;letter-spacing:1px;transition:color .3s ease}
+.node.open .title{color:#e8c97a}
+.node .detail{max-height:0;overflow:hidden;background:linear-gradient(145deg,rgba(20,16,12,.8),rgba(12,10,8,.9));border:1px solid rgba(74,58,40,.2);border-radius:10px;padding:0 .8rem;font-size:.82rem;color:#8a7a60;line-height:1.8;transition:max-height .35s ease,padding .35s ease,border-color .35s ease}
+.node.open .detail{max-height:600px;padding:.8rem;border-color:rgba(205,127,50,.15)}
+.tip{position:relative;z-index:1;text-align:center;font-size:.65rem;color:#3a2a1a;padding:.5rem 0 1.5rem;letter-spacing:1px}
+.tip::before{content:'👆 '}
+footer{position:relative;z-index:1;text-align:center;padding:1.5rem 1rem calc(1rem + env(safe-area-inset-bottom,0px));font-size:.6rem;color:#3a2a1a;border-top:1px solid rgba(74,58,40,.08);margin-top:.5rem;letter-spacing:1px}
+.back{display:block;text-align:center;margin:0 auto 1.5rem;color:#6a5a40;text-decoration:none;font-size:.8rem;border:1px solid rgba(74,58,40,.25);padding:.5rem 1.5rem;border-radius:8px;width:fit-content;position:relative;z-index:1;transition:all .3s ease}
+.back:active{color:#cd7f32;border-color:rgba(205,127,50,.3);background:rgba(205,127,50,.04)}
+@media(min-width:481px){header .emblem{font-size:2.6rem}header h1{font-size:1.6rem}}
 </style>
 </head>
 <body>
 <header>
-<h1>管仲改革 · 时间轴</h1>
-<p>春秋时期齐国崛起之路</p>
+  <span class="emblem">📜</span>
+  <h1>管仲改革 · 时间轴</h1>
+  <p>春秋时期齐国崛起之路</p>
 </header>
 <div class="timeline">
 <div class="node" onclick="this.classList.toggle('open')">

@@ -6,18 +6,18 @@
 <title>齐国故城 · 千年复原</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#1a1209;color:#f0e6d3;overflow:hidden;height:100vh;display:flex;flex-direction:column;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#080604;color:#d4c5a9;overflow:hidden;height:100vh;display:flex;flex-direction:column;-webkit-tap-highlight-color:transparent}
 header{text-align:center;padding:calc(.8rem + env(safe-area-inset-top,0px)) 1rem .7rem;background:linear-gradient(180deg,rgba(42,31,18,.92) 0%,transparent 100%);z-index:10}
 header h1{font-size:1.25rem;font-weight:700;color:#e8c97a;letter-spacing:4px}
 header p{font-size:.72rem;color:#b8a080;margin-top:.3rem;letter-spacing:2px}
 .wrap{flex:1;position:relative;touch-action:none}
 canvas{display:block;width:100%;height:100%}
-.info{position:fixed;bottom:calc(1rem + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:rgba(42,31,18,.92);border:1px solid #b8860b;border-radius:8px;padding:.6rem 1rem;max-width:88%;font-size:.75rem;color:#c4a970;text-align:center;line-height:1.6;backdrop-filter:blur(4px);z-index:20}
-.back{position:fixed;bottom:calc(1rem + env(safe-area-inset-bottom,0px));left:1rem;color:#c4a970;text-decoration:none;font-size:.8rem;background:rgba(42,31,18,.9);border:1px solid #4a3820;padding:.45rem .9rem;border-radius:6px;z-index:20}
-footer{text-align:center;padding:.4rem .4rem calc(.4rem + env(safe-area-inset-bottom,0px));font-size:.65rem;color:#6a5a40;background:#1a1209}
-#loading{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(26,18,9,.95);z-index:50}
-#loading .spin{width:44px;height:44px;border:4px solid #4a3820;border-top-color:#b8860b;border-radius:50%;animation:rot 1s linear infinite}
-#loading p{color:#c4a970;font-size:.9rem;margin-top:1rem;letter-spacing:2px}
+.info{position:fixed;bottom:calc(1rem + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:rgba(20,16,12,.9);border:1px solid rgba(205,127,50,.12);border-radius:10px;padding:.5rem .9rem;max-width:88%;font-size:.7rem;color:#6a5a40;text-align:center;line-height:1.6;backdrop-filter:blur(4px);z-index:20}
+.back{position:fixed;bottom:calc(1rem + env(safe-area-inset-bottom,0px));left:1rem;color:#6a5a40;text-decoration:none;font-size:.75rem;background:rgba(20,16,12,.9);border:1px solid rgba(74,58,40,.2);padding:.4rem .8rem;border-radius:8px;z-index:20;transition:all .3s ease;backdrop-filter:blur(4px)}
+footer{text-align:center;padding:.4rem .4rem calc(.4rem + env(safe-area-inset-bottom,0px));font-size:.6rem;color:#3a2a1a;background:#080604}
+#loading{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(8,6,4,.96);z-index:50}
+#loading .spin{width:40px;height:40px;border:3px solid rgba(74,58,40,.2);border-top-color:rgba(205,127,50,.4);border-radius:50%;animation:rot 1s linear infinite}
+#loading p{color:#6a5a40;font-size:.85rem;margin-top:1rem;letter-spacing:2px}
 @keyframes rot{to{transform:rotate(360deg)}}
 </style>
 </head>
@@ -27,10 +27,10 @@ footer{text-align:center;padding:.4rem .4rem calc(.4rem + env(safe-area-inset-bo
   <p>临淄 · 约公元前 1046 年 — 前 221 年 · 依据考古遗址布局复原</p>
 </header>
 <div class="wrap"><canvas id="city"></canvas></div>
-<div class="info">故城由大城与小城组成，小城居西北为宫殿区，大城为居民与工商区<br>鼠标 / 手指拖拽旋转 · 滚轮缩放 · 淄河沿东城墙外流过</div>
+<div class="info">故城由大城与小城组成 · 拖拽旋转 · 滚轮缩放</div>
 <a class="back" href="../">← 返回主页</a>
-<footer>布局参考：临淄齐国故城遗址 · 材质：Poly Haven CC0 · v6</footer>
-<div id="loading"><div class="spin"></div><p>正在复原齐国故城 v6…</p></div>
+<footer>布局参考：临淄齐国故城遗址 · 材质：Poly Haven CC0</footer>
+<div id="loading"><div class="spin"></div><p>正在复原齐国故城…</p></div>
 
 <script src="../libs/three.min.js"></script>
 <script>

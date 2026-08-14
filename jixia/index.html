@@ -1,56 +1,63 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
 <title>稷下学宫 · 百家争鸣</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#1a1209;color:#f0e6d3;min-height:100vh;background-image:radial-gradient(ellipse at 30% 20%,#3d2b1a 0%,#1a1209 70%);padding:1rem;max-width:640px;margin:0 auto;-webkit-tap-highlight-color:transparent}
-header{text-align:center;padding:calc(1.5rem + env(safe-area-inset-top,0px)) 1rem 1rem;border-bottom:1px solid #4a3820;margin-bottom:1.5rem}
-header h1{font-size:1.6rem;font-weight:700;background:linear-gradient(135deg,#e8c97a,#b8860b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:4px}
-header p{font-size:.85rem;color:#b8a080;margin-top:.5rem;letter-spacing:2px}
-.progress{display:flex;align-items:center;gap:.5rem;margin-bottom:2rem;padding:0 .5rem}
-.progress-bar{flex:1;height:6px;background:#2a1f12;border-radius:3px;overflow:hidden;border:1px solid #4a3820}
-.progress-fill{height:100%;background:linear-gradient(90deg,#6b4423,#b8860b);transition:width .4s ease;width:0%}
-.progress-text{font-size:.8rem;color:#c4a970;font-weight:600;min-width:3rem;text-align:right}
-.card{background:linear-gradient(145deg,#2a1f12,#1e160c);border:1px solid #4a3820;border-radius:12px;padding:1.5rem;margin-bottom:1rem;animation:fadeIn .4s ease}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#080604;color:#d4c5a9;min-height:100vh;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 120% 40% at 50% 0%,rgba(139,115,85,.08) 0%,transparent 60%),radial-gradient(ellipse 80% 60% at 80% 80%,rgba(74,139,122,.04) 0%,transparent 50%);pointer-events:none;z-index:0}
+.page{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:1rem}
+header{text-align:center;padding:calc(1.8rem + env(safe-area-inset-top,0px)) 1rem 1rem}
+header .emblem{font-size:2.2rem;display:block;margin-bottom:.4rem;filter:drop-shadow(0 0 20px rgba(205,127,50,.15))}
+header h1{font-size:1.5rem;font-weight:800;color:#d4c5a9;letter-spacing:6px;text-shadow:0 0 30px rgba(205,127,50,.1)}
+header p{font-size:.7rem;color:#6a5a40;margin-top:.4rem;letter-spacing:3px;border:1px solid rgba(74,58,40,.15);display:inline-block;padding:.15rem .8rem;border-radius:12px}
+.progress{display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem;padding:0 .5rem}
+.progress-bar{flex:1;height:4px;background:rgba(74,58,40,.2);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#6a5a40,#cd7f32);transition:width .4s ease;border-radius:2px;width:0%}
+.progress-text{font-size:.75rem;color:#6a5a40;font-weight:600;min-width:3rem;text-align:right;letter-spacing:1px}
+.card{background:linear-gradient(165deg,rgba(20,16,12,.8),rgba(12,10,8,.9));border:1px solid rgba(74,58,40,.2);border-radius:14px;padding:1.5rem;margin-bottom:1rem;animation:fadeIn .4s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.q-title{font-size:1rem;color:#c4a970;margin-bottom:1rem;line-height:1.6}
-.q-title .num{color:#b8860b;font-weight:700;font-size:1.1rem;margin-right:.5rem}
+.q-title{font-size:.95rem;color:#c4a970;margin-bottom:1.2rem;line-height:1.7;letter-spacing:.5px}
+.q-title .num{color:#cd7f32;font-weight:700;font-size:1rem;margin-right:.5rem}
 .options{display:flex;flex-direction:column;gap:.6rem}
-.opt{background:#1a1209;border:1px solid #4a3820;border-radius:8px;padding:.9rem 1rem;cursor:pointer;transition:all .2s ease;font-size:.95rem;color:#f0e6d3;text-align:left;font-family:inherit;width:100%;min-height:48px;-webkit-tap-highlight-color:transparent}
-.opt:hover:not(:disabled){border-color:#b8860b;background:#2a1f12;transform:translateX(2px)}
+.opt{background:rgba(12,10,8,.6);border:1px solid rgba(74,58,40,.2);border-radius:10px;padding:.9rem 1rem;cursor:pointer;transition:all .25s ease;font-size:.9rem;color:#d4c5a9;text-align:left;font-family:inherit;width:100%;min-height:48px;-webkit-tap-highlight-color:transparent}
+.opt:active:not(:disabled){border-color:rgba(205,127,50,.3);background:rgba(20,16,12,.8);transform:translateX(3px)}
 .opt:disabled{cursor:default}
-.opt.correct{background:linear-gradient(145deg,#3d4a1a,#2a3812);border-color:#8aaa1a;color:#d8e8a8}
-.opt.wrong{background:linear-gradient(145deg,#4a1a1a,#381212);border-color:#aa3a1a;color:#e8a8a8}
-.opt.show-correct{border-color:#8aaa1a}
-.feedback{margin-top:1rem;padding:.9rem 1rem;border-radius:8px;font-size:.85rem;line-height:1.6;animation:fadeIn .3s ease}
-.feedback.right{background:rgba(138,170,26,.15);border:1px solid #8aaa1a;color:#d8e8a8}
-.feedback.wrong{background:rgba(170,58,26,.15);border:1px solid #aa3a1a;color:#e8a8a8}
-.next-btn{display:block;width:100%;margin-top:1rem;padding:.9rem;background:linear-gradient(135deg,#b8860b,#8a6509);color:#1a1209;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:2px;min-height:48px;-webkit-tap-highlight-color:transparent}
-.next-btn:hover{background:linear-gradient(135deg,#d4a02b,#a88519)}
-.result{text-align:center;padding:2rem 1rem;animation:fadeIn .5s ease}
-.result h2{font-size:1.5rem;color:#b8860b;margin-bottom:1rem;letter-spacing:3px}
-.stamp{display:inline-block;margin:1.5rem auto;padding:1.5rem 2rem;border:3px solid #b8860b;border-radius:50%;transform:rotate(-8deg);background:radial-gradient(circle,rgba(184,134,11,.15) 0%,transparent 70%);box-shadow:0 0 30px rgba(184,134,11,.4)}
-.stamp-text{font-size:1.1rem;color:#b8860b;font-weight:700;letter-spacing:3px;line-height:1.4}
-.stamp-text small{display:block;font-size:.7rem;color:#c4a970;margin-top:.4rem;font-weight:400;letter-spacing:2px}
-.score{font-size:1.2rem;color:#c4a970;margin:1rem 0}
-.score .num{color:#b8860b;font-size:2rem;font-weight:700}
-.review{margin-top:1.5rem;text-align:left;background:#2a1f12;border:1px solid #4a3820;border-radius:8px;padding:1rem}
-.review h3{color:#c4a970;font-size:.95rem;margin-bottom:.8rem}
-.review-item{font-size:.85rem;padding:.5rem 0;border-bottom:1px dashed #4a3820;color:#f0e6d3;line-height:1.5}
+.opt.correct{background:linear-gradient(165deg,rgba(60,80,30,.4),rgba(40,55,20,.3));border-color:rgba(138,170,26,.4);color:#c4d4a0}
+.opt.wrong{background:linear-gradient(165deg,rgba(80,30,30,.4),rgba(55,20,20,.3));border-color:rgba(170,58,26,.4);color:#d4a0a0}
+.opt.show-correct{border-color:rgba(138,170,26,.3)}
+.feedback{margin-top:1rem;padding:.8rem 1rem;border-radius:8px;font-size:.82rem;line-height:1.7;animation:fadeIn .3s ease;letter-spacing:.3px}
+.feedback.right{background:rgba(60,80,30,.12);border:1px solid rgba(138,170,26,.2);color:#b8c898}
+.feedback.wrong{background:rgba(80,30,30,.12);border:1px solid rgba(170,58,26,.2);color:#c8a0a0}
+.next-btn{display:block;width:100%;margin-top:1rem;padding:.85rem;background:linear-gradient(135deg,rgba(205,127,50,.15),rgba(120,70,25,.08));color:#d4c5a9;border:1px solid rgba(205,127,50,.25);border-radius:10px;font-size:.9rem;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:2px;min-height:48px;transition:all .3s ease;-webkit-tap-highlight-color:transparent}
+.next-btn:active{transform:scale(.97);border-color:rgba(205,127,50,.4)}
+.result{text-align:center;padding:2rem .5rem;animation:fadeIn .5s ease}
+.result h2{font-size:1.4rem;color:#cd7f32;margin-bottom:1rem;letter-spacing:3px}
+.stamp{display:inline-block;margin:1.5rem auto;padding:1.5rem 2rem;border:2px solid rgba(205,127,50,.3);border-radius:50%;transform:rotate(-6deg);background:radial-gradient(circle,rgba(205,127,50,.08) 0%,transparent 70%);box-shadow:0 0 40px rgba(205,127,50,.15)}
+.stamp-text{font-size:1rem;color:#b8966a;font-weight:700;letter-spacing:3px;line-height:1.5}
+.stamp-text small{display:block;font-size:.65rem;color:#6a5a40;margin-top:.4rem;font-weight:400;letter-spacing:2px}
+.score{font-size:1.1rem;color:#8a7a60;margin:1rem 0}
+.score .num{color:#cd7f32;font-size:1.8rem;font-weight:700}
+.review{margin-top:1.5rem;text-align:left;background:linear-gradient(165deg,rgba(20,16,12,.8),rgba(12,10,8,.9));border:1px solid rgba(74,58,40,.15);border-radius:12px;padding:1rem}
+.review h3{color:#8a7a60;font-size:.85rem;margin-bottom:.8rem;letter-spacing:2px}
+.review-item{font-size:.8rem;padding:.5rem 0;border-bottom:1px dashed rgba(74,58,40,.15);color:#b8a888;line-height:1.6}
 .review-item:last-child{border:none}
 .review-item .ok{color:#8aaa1a;font-weight:600}
 .review-item .ng{color:#aa3a1a;font-weight:600}
-.back{display:block;text-align:center;margin:1.5rem auto;color:#b8860b;text-decoration:none;font-size:.85rem;border:1px solid #b8860b;padding:.5rem 1.5rem;border-radius:6px;width:fit-content}
-footer{text-align:center;padding:1.5rem 1rem calc(1rem + env(safe-area-inset-bottom,0px));font-size:.7rem;color:#6a5a40;line-height:1.6;border-top:1px solid #2a1f12;margin-top:2rem}
+.back{display:block;text-align:center;margin:1.5rem auto;color:#6a5a40;text-decoration:none;font-size:.8rem;border:1px solid rgba(74,58,40,.25);padding:.5rem 1.5rem;border-radius:8px;width:fit-content;transition:all .3s ease}
+.back:active{color:#cd7f32;border-color:rgba(205,127,50,.3);background:rgba(205,127,50,.04)}
+footer{text-align:center;padding:1.5rem 1rem calc(1rem + env(safe-area-inset-bottom,0px));font-size:.6rem;color:#3a2a1a;line-height:1.6;border-top:1px solid rgba(74,58,40,.08);margin-top:1.5rem;letter-spacing:1px}
+@media(min-width:481px){header .emblem{font-size:2.6rem}header h1{font-size:1.7rem}}
 </style>
 </head>
 <body>
+<div class="page">
 <header>
-<h1>稷下学宫</h1>
-<p>百家争鸣 · 思想盛宴</p>
+  <span class="emblem">🎓</span>
+  <h1>稷下学宫</h1>
+  <p>百家争鸣 · 思想盛宴</p>
 </header>
 <div class="progress">
 <div class="progress-bar">
@@ -60,18 +67,25 @@ footer{text-align:center;padding:1.5rem 1rem calc(1rem + env(safe-area-inset-bot
 </div>
 <div id="quiz"></div>
 <div id="result"></div>
+<footer>
+资料来源：司马迁《史记·田齐世家》、班固《汉书·艺文志》（公有领域，距今超过 2000 年）<br>
+齐迹智行实践团 · 2026 暑假社会实践
+</footer>
+<a class="back" href="../">← 返回主页</a>
+</div>
 <script>
+(function () {
 var questions = [
-  {q: "稷下学宫始建于哪位齐国君主在位时期？", opts: ["齐桓公","齐威王","齐宣王","齐湣王"], ans: 1, why: "稷下学宫由齐威王创设，至齐宣王时达到鼎盛，是战国时期重要的学术文化中心。"},
-  {q: "稷下学宫最突出的学术特色是？", opts: ["儒家独尊","法家独尊","杂糅各家，百家争鸣","道家独尊"], ans: 2, why: "学宫汇聚儒、道、法、墨、名、阴阳等诸家学者，提倡学术自由辩论，是先秦百家争鸣的主要舞台。"},
-  {q: "稷下学宫鼎盛时期汇集了多少学者？", opts: ["数十人","数百人","数千人","上万人"], ans: 1, why: "据《史记》记载，齐宣王时稷下学士复盛且数百千人，使齐都临淄成为当时的学术文化中心。"},
-  {q: "稷下学宫因位于临淄哪座城门附近而得名？", opts: ["东门","西门","稷门","北门"], ans: 2, why: "稷下学宫位于齐国都城临淄的稷门（西南门）附近，因此得名“稷下”。"},
-  {q: "稷下学宫中主持学宫事务的“学长”职位称为什么？", opts: ["祭酒","博士","太傅","祭师"], ans: 0, why: "“祭酒”是稷下学宫的主持者、学术领袖，荀子曾三度担任此职，是学宫最著名的先生之一。"},
+  {q: "稷下学宫位于战国时期哪个国家的都城？", opts: ["秦国咸阳","齐国临淄","楚国郢都","赵国邯郸"], ans: 1, why: "稷下学宫位于齐国都城临淄（今山东淄博）的稷门附近，是世界上最早的官办高等学府之一。"},
+  {q: "稷下学宫始建于哪一位齐国国君时期？", opts: ["齐桓公（田午）","齐威王","齐宣王","齐湣王"], ans: 0, why: "稷下学宫由齐桓公田午（公元前 374—前 357 年在位）创立，历经六代国君，持续约 150 年。"},
+  {q: "被誉为稷下学宫“祭酒”的著名学者是谁？", opts: ["孟子","荀子","邹衍","淳于髡"], ans: 1, why: "“祭酒”是稷下学宫的主持者、学术领袖，荀子曾三度担任此职，是学宫最著名的先生之一。"},
   {q: "哪位思想家曾三次担任稷下学宫的“祭酒”？", opts: ["孟子","荀子","韩非子","庄子"], ans: 1, why: "荀子（荀况）在稷下学宫“三为祭酒”，是战国后期儒家的重要代表，也是稷下学宫的学术泰斗。"},
   {q: "以“滑稽多辩”著称、善用隐语劝谏齐威王的稷下学者是谁？", opts: ["淳于髡","田骈","慎到","环渊"], ans: 0, why: "淳于髡是稷下学宫早期最具代表性的学者，以博学、诙谐、善辩闻名，常用隐语委婉劝谏齐威王。"},
   {q: "提出“五德终始说”和“大九州说”的稷下学者是谁？", opts: ["邹衍","邹忌","孟子","荀子"], ans: 0, why: "邹衍是阴阳五行学说的集大成者，提出“五德终始说”解释王朝更替，又提出“大九州说”拓展地理视野。"},
   {q: "稷下先生的“不治而议论”指的是什么？", opts: ["不做官，专心务农","不担任具体政务，专以著书立说、议论国事为务","不读书，只空谈","不辩论，只抄书"], ans: 1, why: "稷下先生多被授予“上大夫”等爵禄，但不担任具体行政职务，专门著书立说、议论国家大事，体现了学术与政治的良性互动。"},
-  {q: "下列哪部著作与稷下学者的整理编撰密切相关？", opts: ["《论语》","《管子》","《孟子》","《离骚》"], ans: 1, why: "《管子》托名春秋名相管仲，实为战国时期稷下学者整理编撰的论文集，内容涵盖政治、经济、哲学、军事等。"}
+  {q: "下列哪部著作与稷下学者的整理编撰密切相关？", opts: ["《论语》","《管子》","《孟子》","《离骚》"], ans: 1, why: "《管子》托名春秋名相管仲，实为战国时期稷下学者整理编撰的论文集，内容涵盖政治、经济、哲学、军事等。"},
+  {q: "稷下学宫在学术上最突出的特点是什么？", opts: ["只研究儒家经典","各家学派自由辩论","只研究法家思想","只研究道家思想"], ans: 1, why: "稷下学宫实行“不治而议论”的学术自由政策，儒、道、法、名、阴阳等各家各派在此自由辩论、相互交融，开创了“百家争鸣”的黄金时代。"},
+  {q: "稷下学宫对后世最重要的影响是什么？", opts: ["建立了科举制度","开创了官办学术交流与争鸣的传统","确立了儒家独尊的地位","发明了活字印刷"], ans: 1, why: "稷下学宫作为世界上最早的官办高等学府和学术交流中心，其“百家争鸣”的学术自由精神对中国思想文化发展产生了深远影响。"}
 ];
 var cur = 0, score = 0, answered = [];
 function render() {
@@ -134,11 +148,7 @@ function showResult() {
   r.innerHTML = h.join("");
 }
 render();
+})();
 </script>
-<a class="back" href="../">← 返回主页</a>
-<footer>
-资料来源：司马迁《史记·田齐世家》、班固《汉书·艺文志》（公有领域，距今超过 2000 年）<br>
-齐迹智行实践团 · 数字赋能齐文脉，青春传承齐风骨 · 2026 暑假社会实践
-</footer>
 </body>
 </html>
