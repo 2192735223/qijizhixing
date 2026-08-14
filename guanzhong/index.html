@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>管仲改革 · 齐迹智行</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#1a1209;color:#f0e6d3;min-height:100vh;background-image:linear-gradient(180deg,#2a1f12 0%,#1a1209 100%)}
+header{text-align:center;padding:1.5rem 1rem 1rem}
+header h1{font-size:1.4rem;color:#e8c97a;letter-spacing:4px}
+header p{font-size:.78rem;color:#b8a080;margin-top:.4rem;letter-spacing:2px}
+.timeline{max-width:600px;margin:0 auto;padding:1rem 1rem 2rem;position:relative}
+.timeline::before{content:"";position:absolute;left:1.5rem;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#b8860b,#6a5035);border-radius:2px}
+.node{position:relative;padding:0 0 1.2rem 3rem;cursor:pointer;user-select:none}
+.node .dot{position:absolute;left:1.05rem;top:.4rem;width:1.1rem;height:1.1rem;border-radius:50%;background:#b8860b;border:3px solid #1a1209;box-shadow:0 0 10px rgba(184,134,11,.6);transition:background .3s}
+.node .time{font-size:.7rem;color:#b8860b;letter-spacing:2px;margin-bottom:.2rem}
+.node .title{font-size:1.05rem;font-weight:600;color:#f0e6d3;margin:.2rem 0 .4rem}
+.node .detail{max-height:0;overflow:hidden;background:rgba(42,31,18,.7);border:1px solid #4a3820;border-radius:8px;padding:0 .8rem;font-size:.85rem;color:#c4a970;line-height:1.7;transition:max-height .3s ease,padding .3s ease}
+.node.open .detail{max-height:300px;padding:.8rem}
+.node.open .dot{background:#e8c97a;box-shadow:0 0 14px rgba(232,201,122,.8)}
+.tip{text-align:center;font-size:.72rem;color:#6a5a40;padding:.5rem 0 1.5rem}
+.tip::before{content:"👆 "}
+footer{text-align:center;padding:1rem;font-size:.65rem;color:#6a5a40;border-top:1px solid #2a1f12}
+.back{display:block;text-align:center;margin:0 auto 1.5rem;color:#b8860b;text-decoration:none;font-size:.85rem;border:1px solid #b8860b;padding:.5rem 1.5rem;border-radius:6px;width:fit-content}
+</style>
+</head>
+<body>
+<header>
+<h1>管仲改革 · 时间轴</h1>
+<p>春秋时期齐国崛起之路</p>
+</header>
+<div class="timeline">
+<div class="node" onclick="this.classList.toggle('open')">
+<span class="dot"></span>
+<div class="time">公元前 685 年</div>
+<div class="title">管仲拜相</div>
+<div class="detail">齐桓公任命管仲为相，开启齐国改革序幕。管仲以「仓廪实而知礼节，衣食足而知荣辱」为施政纲领，开启了系统性的改革实践，使齐国迅速强盛。</div>
+</div>
+<div class="node" onclick="this.classList.toggle('open')">
+<span class="dot"></span>
+<div class="time">约前 685 — 前 645</div>
+<div class="title">管仲治齐 · 内政改革</div>
+<div class="detail">整顿行政、划分国野；实行「参其国而伍其鄙」，把国都划分为二十一乡，工商各六，士乡十五，强化基层组织管理，奠定齐国行政体系。</div>
+</div>
+<div class="node" onclick="this.classList.toggle('open')">
+<span class="dot"></span>
+<div class="time">改革核心举措</div>
+<div class="title">盐铁专营</div>
+<div class="detail">推行盐铁专卖，由国家垄断山海资源，开创中国最早的「国企」模式。既充实国库，又避免与民争利，被誉为「民不加赋而国用足」。</div>
+</div>
+<div class="node" onclick="this.classList.toggle('open')">
+<span class="dot"></span>
+<div class="time">经济创新</div>
+<div class="title">九府圜法</div>
+<div class="detail">统一货币制度，规范圜钱流通，便利商品交换，促进齐国商业繁荣，使齐都临淄成为当时最重要的商业中心。</div>
+</div>
+<div class="node" onclick="this.classList.toggle('open')">
+<span class="dot"></span>
+<div class="time">社会改革</div>
+<div class="title">四民分业</div>
+<div class="detail">士农工商按职业聚居，世代相传。专业化的社会分工提高了生产效率，也稳定了社会秩序，成为齐国长期繁荣的制度基础。</div>
+</div>
+<div class="node" onclick="this.classList.toggle('open')">
+<span class="dot"></span>
+<div class="time">公元前 651 年</div>
+<div class="title">葵丘会盟</div>
+<div class="detail">齐桓公在葵丘大会诸侯，被周天子正式册封为诸侯之长，齐国霸业达到顶峰。孔子赞曰：「桓公九合诸侯，不以兵车，管仲之力也。」</div>
+</div>
+</div>
+<div class="tip">点击节点查看详情</div>
+<footer>资料整理自《史记·齐太公世家》《国语·齐语》</footer>
+<a class="back" href="../">← 返回主页</a>
+</body>
+</html>
