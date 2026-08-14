@@ -63,6 +63,7 @@ canvas{display:block;width:100%;height:100%}
   var SKY = 0xcbb88f;
   scene.background = new THREE.Color(SKY);
   scene.fog = new THREE.Fog(SKY, 45, 110);
+
   var manager = new THREE.LoadingManager();
   function tex(src, rx, ry) {
     var t = new THREE.TextureLoader(manager).load(src);
@@ -81,71 +82,108 @@ canvas{display:block;width:100%;height:100%}
   var wallMat = mat(wallTex);
   var woodMat = mat(woodTex, { roughness: 0.85 });
   var darkWoodMat = new THREE.MeshStandardMaterial({ color: 0x4a3120, roughness: 0.9 });
-  var roofMat = new THREE.MeshStandardMaterial({ color: 0x3f4a4d, roughness: 0.9 });
-  var gateRoofMat = new THREE.MeshStandardMaterial({ color: 0x2e6b4f, roughness: 0.85 });
-  var redFrameMat = new THREE.MeshStandardMaterial({ color: 0x8c3a2a, roughness: 0.7 });
+  var roofMat = new THREE.MeshStandardMaterial({ color: 0x3f4a4d, roughness: 0.9 });   // 青瓦
+  var gateRoofMat = new THREE.MeshStandardMaterial({ color: 0x2e6b4f, roughness: 0.85 }); // 绿瓦
+  var redFrameMat = new THREE.MeshStandardMaterial({ color: 0x8c3a2a, roughness: 0.7 });  // 朱漆木
   var ballMat = new THREE.MeshStandardMaterial({ color: 0x7a4a22, roughness: 0.6, metalness: 0.05 });
   var trunkMat = new THREE.MeshStandardMaterial({ color: 0x5a3d24, roughness: 0.95 });
   var leafMat = new THREE.MeshStandardMaterial({ color: 0x3f6b33, roughness: 0.9 });
+
   function add(m) { scene.add(m); return m; }
   function box(w, h, d, x, y, z, m) {
     var mm = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
     mm.position.set(x, y, z);
     return add(mm);
   }
-  function gable(w, h, d, x, y, z, m) {
-    var g = new THREE.BufferGeometry();
-    var hw = w / 2, hd = d / 2;
-    var v = new Float32Array([-hw,0,-hd, hw,0,-hd, hw,0,hd, -hw,0,hd, 0,h,0]);
-    g.setAttribute('position', new THREE.BufferAttribute(v, 3));
-    g.setIndex([0,1,4, 1,2,4, 2,3,4, 3,0,4, 0,2,1, 0,3,2]);
-    g.computeVertexNormals();
-    var mm = new THREE.Mesh(g, m);
+  function cyl(rT, rB, h, x, y, z, m, seg) {
+    var mm = new THREE.Mesh(new THREE.CylinderGeometry(rT, rB, h, seg || 12), m);
     mm.position.set(x, y, z);
     return add(mm);
   }
-  function cyl(rt, rb, h, x, y, z, m, seg) {
-    var mm = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg || 12), m);
+  function gableGeo(span, rise, len) {
+    var shape = new THREE.Shape();
+    shape.moveTo(-span / 2, 0); shape.lineTo(span / 2, 0); shape.lineTo(0, rise); shape.closePath();
+    var geo = new THREE.ExtrudeGeometry(shape, { depth: len, bevelEnabled: false });
+    geo.translate(0, 0, -len / 2);
+    return geo;
+  }
+  function gable(w, h, d, x, y, z, m, rotY) {
+    var mm = new THREE.Mesh(gableGeo(w, h, d), m || roofMat);
     mm.position.set(x, y, z);
+    if (rotY) mm.rotation.y = rotY;
     return add(mm);
   }
-  // Ground
-  box(42, 0.2, 34, 0, -0.1, -2, groundMat);
-  // Back wall
-  box(44, 0.4, 0.4, 0, 0.2, -17.2, wallMat);
-  box(0.4, 0.4, 34, -21, 0.2, -2, wallMat);
-  box(0.4, 0.4, 34, 21, 0.2, -2, wallMat);
-  // Gate
-  var gatePostMat = new THREE.MeshStandardMaterial({ color: 0x6a3a2a, roughness: 0.85 });
-  var gateBeamMat = new THREE.MeshStandardMaterial({ color: 0x5a3020, roughness: 0.85 });
-  var EYE_Y = 2.75, EYE_Z = -16.5;
-  cyl(0.22, 0.26, 3.8, -1.5, 1.9, EYE_Z, gatePostMat, 10);
-  cyl(0.22, 0.26, 3.8, 1.5, 1.9, EYE_Z, gatePostMat, 10);
-  box(3.2, 0.2, 0.25, 0, 3.75, EYE_Z, gateBeamMat);
-  box(0.2, 0.2, 0.25, -1.5, 3.4, EYE_Z, gateBeamMat);
-  box(0.2, 0.2, 0.25, 1.5, 3.4, EYE_Z, gateBeamMat);
-  // Crossbar
-  var crossMat = new THREE.MeshStandardMaterial({ color: 0x8c3a2a, roughness: 0.7 });
-  box(3.6, 0.12, 0.12, 0, EYE_Y + 0.55, EYE_Z, crossMat);
-  box(0.1, 1.0, 0.12, -1.5, EYE_Y, EYE_Z, crossMat);
-  box(0.1, 1.0, 0.12, 1.5, EYE_Y, EYE_Z, crossMat);
-  box(0.1, 0.1, 0.12, -0.75, EYE_Y + 0.55, EYE_Z, crossMat);
-  box(0.1, 0.1, 0.12, 0.75, EYE_Y + 0.55, EYE_Z, crossMat);
-  // Stands
-  function stand(sx, sz, color) {
-    var m = new THREE.MeshStandardMaterial({ color: color, roughness: 0.85 });
-    for (var step = 0; step < 4; step++) {
-      box(3.2, 0.2, 0.5, sx, 0.1 + step * 0.35, sz + step * 0.5, m);
+
+  // ---------- 光照 ----------
+  // r160 物理光照单位：强度需比旧版 legacy 模式高约 π 倍
+  scene.add(new THREE.HemisphereLight(0xfff2dc, 0x5a4630, 3.0));
+  var sun = new THREE.DirectionalLight(0xfff0d0, 3.5);
+  sun.position.set(30, 50, 20);
+  scene.add(sun);
+
+  // ---------- 大地与鞠场 ----------
+  var earth = new THREE.Mesh(new THREE.PlaneGeometry(90, 64), mat(tex('assets/ground.jpg', 22, 15)));
+  earth.rotation.x = -Math.PI / 2;
+  add(earth);
+  // 鞠场（稍高的夯土台地）
+  box(20, 0.16, 12.5, 0, 0.06, 0, groundMat);
+
+  // ---------- 风流眼（鞠门） ----------
+  var EYE_Y = 2.15, EYE_Z = -7, HALF = 1.65;
+  // 两侧立柱
+  cyl(0.13, 0.15, 3.6, -HALF, 1.8, EYE_Z, woodMat);
+  cyl(0.13, 0.15, 3.6, HALF, 1.8, EYE_Z, woodMat);
+  // 横梁
+  box(3.8, 0.2, 0.2, 0, 3.62, EYE_Z, darkWoodMat);
+  // 圆形风流眼（朱漆木圈）
+  var ring = new THREE.Mesh(new THREE.TorusGeometry(0.6, 0.055, 12, 48), redFrameMat);
+  ring.position.set(0, EYE_Y, EYE_Z);
+  add(ring);
+  // 兜网（以风流眼为中心的环形网）
+  var net = new THREE.Mesh(
+    new THREE.RingGeometry(0.62, 1.55, 40, 4),
+    new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.28 })
+  );
+  net.position.set(0, EYE_Y, EYE_Z);
+  add(net);
+  // 两根斜撑
+  function strut(x1, y1, z1, x2, y2, z2) {
+    var dx = x2 - x1, dy = y2 - y1, dz = z2 - z1;
+    var len = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    var s = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, len, 8), darkWoodMat);
+    s.position.set((x1 + x2) / 2, (y1 + y2) / 2, (z1 + z2) / 2);
+    s.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(dx, dy, dz).normalize());
+    add(s);
+  }
+  strut(-HALF, 1.4, EYE_Z, -0.35, EYE_Y, EYE_Z);
+  strut(HALF, 1.4, EYE_Z, 0.35, EYE_Y, EYE_Z);
+
+  // ---------- 背景宫墙与城楼 ----------
+  function wallSegment(x, z) {
+    box(22, 3.2, 0.8, x, 1.6, z, wallMat);
+    for (var i = -5; i <= 5; i++) {
+      if (Math.abs(i * 2) < 3.5) continue; // 中间留口给城楼
+      box(1.1, 0.7, 1.1, x + i * 2, 3.2 + 0.35, z, wallMat);
     }
-    box(3.2, 0.2, 0.3, sx, 0.1 + 4 * 0.35, sz + 4 * 0.5, m);
   }
-  stand(-8, -12.5, 0x5a4a30);
-  stand(8, -12.5, 0x5a4a30);
-  stand(-10, -9.5, 0x4a3a20);
-  stand(10, -9.5, 0x4a3a20);
-  // Far palace
+  wallSegment(-16.5, -13.5); wallSegment(16.5, -13.5);
+  // 中央城楼（门阙式）
+  box(6.5, 4.6, 3.2, 0, 2.3, -13.5, wallMat);
+  box(7.2, 0.5, 3.8, 0, 4.85, -13.5, wallMat);
+  gable(8.2, 2.0, 4.8, 0, 5.6, -13.5, gateRoofMat);
+  // 两侧望楼
+  [[-24.5, -12.5], [24.5, -12.5]].forEach(function (p) {
+    box(2.6, 4.4, 2.6, p[0], 2.2, p[1], wallMat);
+    var tw = new THREE.Mesh(new THREE.ConeGeometry(2.1, 1.3, 4), roofMat);
+    tw.position.set(p[0], 4.4 + 0.65, p[1]);
+    tw.rotation.y = Math.PI / 4;
+    add(tw);
+  });
+  // 远处宫殿剪影（左后方）
   box(9, 2.2, 5, -13, 1.1, -11.5, new THREE.MeshStandardMaterial({ color: 0x6a3a2a, roughness: 0.9 }));
   gable(11, 2.2, 7, -13, 3.3, -11.5, gateRoofMat);
+
+  // ---------- 树木（多层球冠，不用锥体） ----------
   function tree(x, z, s) {
     var sc = s || 1;
     cyl(0.16 * sc, 0.24 * sc, 2.8 * sc, x, 1.4 * sc, z, trunkMat, 8);
@@ -157,7 +195,7 @@ canvas{display:block;width:100%;height:100%}
     var c3 = new THREE.Mesh(new THREE.SphereGeometry(0.85 * sc, 12, 9), leafMat);
     c3.position.set(-0.6 * sc, 2.1 * sc, -0.2 * sc);
     fo.add(c1, c2, c3);
-    fo.position.set(x, 0, z);
+    fo.position.set(x, 0, z);  // 球冠已在组内带 y 偏移，组本身不再抬高，避免树叶悬空
     add(fo);
   }
   tree(-11.5, -4, 1.25);
@@ -166,30 +204,34 @@ canvas{display:block;width:100%;height:100%}
   tree(12.5, 5, 1.0);
   tree(-6, -10.5, 0.8);
   tree(6, -10.5, 0.85);
+
+  // ---------- 蹴鞠（压扁皮球 + 缝线） ----------
   var ball = new THREE.Group();
   var core = new THREE.Mesh(new THREE.SphereGeometry(0.34, 26, 20), ballMat);
   core.scale.y = 0.72;
-  var seams = new THREE.Mesh(new THREE.SphereGeometry(0.342, 26, 20), new THREE.MeshBasicMaterial({ color: 0x2a1a0c, wireframe: true, transparent: true, opacity: 0.4 }));
+  var seams = new THREE.Mesh(
+    new THREE.SphereGeometry(0.342, 26, 20),
+    new THREE.MeshBasicMaterial({ color: 0x2a1a0c, wireframe: true, transparent: true, opacity: 0.4 })
+  );
   seams.scale.y = 0.72;
   ball.add(core, seams);
   var START = new THREE.Vector3(0, 0.42, 4.2);
   ball.position.copy(START);
   scene.add(ball);
 
-  // 光照：PBR 材质必需（r160 物理光照），否则整个场景呈黑色剪影
-  scene.add(new THREE.HemisphereLight(0xfff3d6, 0x4a3a28, 1.8));
-  var sun = new THREE.DirectionalLight(0xfff0cf, 2.6);
-  sun.position.set(8, 15, 6);
-  scene.add(sun);
-
+  // ---------- 相机 ----------
   var camera = new THREE.PerspectiveCamera(55, 1, 0.1, 200);
   camera.position.set(0, 3.6, 9.5);
   camera.lookAt(0, 1.8, -6);
+
+  // ---------- 射门交互 ----------
   var score = 0, scoreEl = document.getElementById('score');
   var popup = document.getElementById('popup');
   var popTitle = document.getElementById('popTitle');
   var popMsg = document.getElementById('popMsg');
-  var state = 'idle', shot = null;
+  var state = 'idle';           // idle | flying | falling
+  var shot = null;
+
   function showPopup(ok) {
     if (ok) {
       score++; scoreEl.textContent = score;
@@ -201,37 +243,76 @@ canvas{display:block;width:100%;height:100%}
     }
     popup.classList.add('show');
   }
+
   canvas.addEventListener('click', function () {
     if (state !== 'idle') return;
-    var tx = (Math.random() - 0.5) * 1.5;
+    var tx = (Math.random() - 0.5) * 1.5;   // 瞄向风流眼中心 ± 0.75
     var ty = EYE_Y + (Math.random() - 0.5) * 0.7;
-    shot = { sx: ball.position.x, sy: ball.position.y, sz: ball.position.z, tx: tx, ty: ty, tz: EYE_Z - 0.55, t: 0, dur: 0.85, hit: Math.abs(tx) < 0.48 && Math.abs(ty - EYE_Y) < 0.42 };
+    shot = {
+      sx: ball.position.x, sy: ball.position.y, sz: ball.position.z,
+      tx: tx, ty: ty, tz: EYE_Z - 0.55,
+      t: 0, dur: 0.85,
+      hit: Math.abs(tx) < 0.48 && Math.abs(ty - EYE_Y) < 0.42
+    };
     state = 'flying';
   });
-  canvas.addEventListener('touchstart', function (e) { e.preventDefault(); if (state === 'idle') canvas.dispatchEvent(new MouseEvent('click')); }, { passive: false });
+  canvas.addEventListener('touchstart', function (e) {
+    e.preventDefault();
+    if (state === 'idle') canvas.dispatchEvent(new MouseEvent('click'));
+  }, { passive: false });
+
+  // ---------- 动画循环 ----------
   function resize() {
     var w = canvas.clientWidth, h = canvas.clientHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
-    if (w < h) { camera.position.set(0, 4.2, 12.5); camera.lookAt(0, 2.0, -6.5); }
-    else { camera.position.set(0, 3.6, 9.5); camera.lookAt(0, 1.8, -6); }
+    // 竖屏时拉远并抬高相机，让鞠门与场景完整入镜
+    if (w < h) {
+      camera.position.set(0, 4.2, 12.5);
+      camera.lookAt(0, 2.0, -6.5);
+    } else {
+      camera.position.set(0, 3.6, 9.5);
+      camera.lookAt(0, 1.8, -6);
+    }
   }
-  window.addEventListener('resize', resize); resize();
+  window.addEventListener('resize', resize);
+  resize();
+
   var last = performance.now();
   (function anim(now) {
     requestAnimationFrame(anim);
-    var dt = Math.min(0.05, (now - last) / 1000); last = now;
+    var dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+
     if (state === 'flying' && shot) {
       shot.t += dt / shot.dur;
       var p = Math.min(1, shot.t);
       var arc = 1.9 * 4 * p * (1 - p);
-      ball.position.set(shot.sx + (shot.tx - shot.sx) * p, shot.sy + (shot.ty - shot.sy) * p + arc, shot.sz + (shot.tz - shot.sz) * p);
-      ball.rotation.x += dt * 6; ball.rotation.z += dt * 2.5;
-      if (p >= 1) { state = 'falling'; showPopup(shot.hit); setTimeout(function () { if (state === 'falling') state = 'reset'; }, 900); }
-    } else if (state === 'falling') { ball.position.y = Math.max(0.42, ball.position.y - dt * 4); }
-    else if (state === 'reset') { ball.position.set(START.x, START.y, START.z); ball.rotation.set(0, 0, 0); state = 'idle'; }
-    else { ball.rotation.y += dt * 0.8; }
+      ball.position.set(
+        shot.sx + (shot.tx - shot.sx) * p,
+        shot.sy + (shot.ty - shot.sy) * p + arc,
+        shot.sz + (shot.tz - shot.sz) * p
+      );
+      ball.rotation.x += dt * 6;
+      ball.rotation.z += dt * 2.5;
+      if (p >= 1) {
+        state = 'falling';
+        showPopup(shot.hit);
+        setTimeout(function () {
+          if (state === 'falling') state = 'reset';
+        }, 900);
+      }
+    } else if (state === 'falling') {
+      ball.position.y = Math.max(0.42, ball.position.y - dt * 4);
+    } else if (state === 'reset') {
+      ball.position.set(START.x, START.y, START.z);
+      ball.rotation.set(0, 0, 0);
+      state = 'idle';
+    } else {
+      ball.rotation.y += dt * 0.8;
+    }
+
     renderer.render(scene, camera);
   })(performance.now());
 })();
