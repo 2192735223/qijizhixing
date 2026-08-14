@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -11,158 +11,106 @@
 <script src="https://cdn.jsdelivr.net/gh/2192735223/qijizhixing@master/libs/aframe.min.js" onerror="window.__aframeLoadFailed=1"></script>
 <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.js" onerror="window.__arjsLoadFailed=1"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#080604;color:#d4c5a9;overflow:hidden;-webkit-tap-highlight-color:transparent}
+
+/* ===== AR Scene ===== */
 a-scene{position:fixed;inset:0;width:100vw;height:100vh;z-index:1}
-.hint{position:fixed;top:calc(1rem + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:rgba(20,16,12,.9);padding:.5rem .9rem;border-radius:8px;font-size:.75rem;color:#8a7a60;z-index:100;text-align:center;border:1px solid rgba(205,127,50,.15);max-width:66%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;backdrop-filter:blur(4px)}
-.print-btn{position:fixed;top:calc(1rem + env(safe-area-inset-top,0px));right:1rem;background:rgba(20,16,12,.9);color:#8a7a60;border:1px solid rgba(205,127,50,.15);padding:.45rem .8rem;border-radius:8px;font-weight:600;cursor:pointer;z-index:110;font-size:.72rem;white-space:nowrap;backdrop-filter:blur(4px);transition:all .3s ease}
-.print-btn:hover{background:#e8c97a}
-.status{position:fixed;bottom:calc(1rem + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:rgba(20,16,12,.9);border:1px solid rgba(205,127,50,.12);border-radius:8px;padding:.45rem .9rem;font-size:.72rem;color:#6a5a40;z-index:100;text-align:center;max-width:88%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;backdrop-filter:blur(4px)}
+
+/* ===== Minimal overlay UI ===== */
+.hint{position:fixed;top:calc(.8rem + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:rgba(20,16,12,.85);padding:.45rem .9rem;border-radius:20px;font-size:.72rem;color:#6a5a40;z-index:100;text-align:center;border:1px solid rgba(205,127,50,.1);max-width:66%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;backdrop-filter:blur(4px)}
+.print-btn{position:fixed;top:calc(.8rem + env(safe-area-inset-top,0px));right:1rem;background:rgba(20,16,12,.85);color:#6a5a40;border:1px solid rgba(205,127,50,.1);padding:.4rem .8rem;border-radius:20px;font-weight:600;cursor:pointer;z-index:110;font-size:.65rem;white-space:nowrap;backdrop-filter:blur(4px);transition:all .3s ease}
+.print-btn:active{border-color:rgba(205,127,50,.2);color:#cd7f32}
+.status{position:fixed;bottom:calc(1.5rem + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:rgba(20,16,12,.85);border:1px solid rgba(205,127,50,.08);border-radius:20px;padding:.4rem .9rem;font-size:.68rem;color:#4a3a28;z-index:100;text-align:center;max-width:88%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;backdrop-filter:blur(4px)}
+.back{position:fixed;bottom:calc(1.5rem + env(safe-area-inset-bottom,0px));left:1rem;color:#4a3a28;text-decoration:none;font-size:.65rem;background:rgba(20,16,12,.85);border:1px solid rgba(74,58,40,.12);padding:.35rem .8rem;border-radius:20px;z-index:100;transition:all .3s ease;backdrop-filter:blur(4px)}
+.back:active{color:#cd7f32;border-color:rgba(205,127,50,.15)}
+
+/* ===== Loading ===== */
 .loading{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(8,6,4,.96);z-index:300}
 .loading .spin{width:40px;height:40px;border:3px solid rgba(74,58,40,.2);border-top-color:rgba(205,127,50,.4);border-radius:50%;animation:rot 1s linear infinite}
 .loading p{color:#6a5a40;font-size:.85rem;margin-top:1rem;letter-spacing:2px}
 @keyframes rot{to{transform:rotate(360deg)}}
+
+/* ===== Marker page ===== */
 .marker-page{display:none;position:fixed;inset:0;background:linear-gradient(165deg,#f0e6d3,#e8dcc8);color:#3a2a1a;padding:2rem;z-index:400;overflow:auto}
 .marker-page.show{display:block}
-.marker-page h2{color:#6b4423;text-align:center;margin-bottom:1rem;letter-spacing:2px}
-.marker-page svg{display:block;margin:1rem auto;max-width:90vw;border:2px solid #1a1209}
-.marker-page .tip{color:#6a5a40;font-size:.8rem;text-align:center;margin-top:1rem;line-height:1.8}
-.marker-page .close{position:fixed;top:1rem;right:1rem;background:rgba(8,6,4,.9);color:#d4c5a9;border:1px solid rgba(74,58,40,.2);padding:.45rem 1rem;border-radius:8px;cursor:pointer;font-size:.85rem}
+.marker-page h2{color:#6b4423;text-align:center;margin-bottom:1rem;font-size:1rem;letter-spacing:2px}
+.marker-page img{display:block;margin:1rem auto;max-width:78vw;border:2px solid rgba(74,58,40,.2);border-radius:4px}
+.marker-page .tip{color:#6a5a40;font-size:.78rem;text-align:center;margin-top:1rem;line-height:1.8}
+.marker-page .close{position:fixed;top:1rem;right:1rem;background:rgba(8,6,4,.9);color:#d4c5a9;border:1px solid rgba(74,58,40,.2);padding:.4rem 1rem;border-radius:8px;cursor:pointer;font-size:.82rem}
+.marker-page .close:active{background:rgba(20,16,12,.9)}
+
+/* ===== Fallback ===== */
 .fallback{position:fixed;inset:0;display:none;background:#080604;z-index:200}
 .fallback.show{display:flex;flex-direction:column;align-items:center;justify-content:center}
 .fallback canvas{width:90vw;height:60vh;border-radius:8px;display:block}
 .fallback p{margin-top:1rem;color:#6a5a40;font-size:.8rem;text-align:center;padding:0 1rem}
-.back{position:fixed;bottom:calc(1rem + env(safe-area-inset-bottom,0px));left:1rem;color:#6a5a40;text-decoration:none;font-size:.75rem;background:rgba(20,16,12,.9);border:1px solid rgba(74,58,40,.2);padding:.4rem .8rem;border-radius:8px;z-index:100;transition:all .3s ease;backdrop-filter:blur(4px)}
 </style>
 </head>
 <body>
 <div class="hint">📷 对准 Hiro 标识卡体验 AR</div>
-<button class="print-btn" onclick="document.getElementById('mp').classList.add('show')">🖨️ 打印 Hiro 标识</button>
+<button class="print-btn" onclick="document.getElementById('mp').classList.add('show')">🖨️ 打印标识</button>
 <div id="status" class="status">正在初始化 AR…</div>
-
-
-
 <div id="fallback" class="fallback">
   <canvas id="view3d"></canvas>
-  <p id="fbMsg">3D 预览模式 · 鼠标 / 手指拖拽旋转</p>
+  <p id="fbMsg">3D 预览模式 · 手指拖拽旋转</p>
 </div>
-
 <div id="mp" class="marker-page">
   <button class="close" onclick="document.getElementById('mp').classList.remove('show')">关闭</button>
-  <h2>Hiro 标识 · 打印后对准摄像头即可体验 AR</h2>
-  <img src="../data/markers/hiro_border_p0.png" alt="Hiro 标识" style="width:min(78vw,340px);height:auto;border:2px solid #1a1209">
-  <div class="tip">
-    打印方法：右键点击上方标识图片 → 「图片另存为」→ 用图片查看器打印（建议 A4，标识宽度约 8—10 厘米）<br>
-    摆放：将标识平放在桌面，摄像头从上方约 30 cm 距离对准<br>
-    注意：首次使用请在浏览器地址栏允许摄像头权限；手机需用 localhost 或 https 访问
-  </div>
+  <h2>Hiro 标识 · 打印后对准摄像头</h2>
+  <img src="../data/markers/hiro_border_p0.png" alt="Hiro 标识">
+  <div class="tip">右键保存图片 → 打印（A4，标识宽约 8-10cm）<br>平放桌面，摄像头从上方约 30cm 对准<br>首次使用请允许摄像头权限</div>
 </div>
-
-<a class="back" href="../">← 返回主页</a>
-
+<a class="back" href="../">← 返回</a>
 <div id="loading" class="loading"><div class="spin"></div><p>正在加载青铜鼎模型…</p></div>
-
 <script>
 (function () {
   var THREE = (window.AFRAME && AFRAME.THREE) || window.THREE;
   var loadingEl = document.getElementById('loading');
   var statusEl = document.getElementById('status');
-  function setStatus(t) { statusEl.textContent = t; }
-
-  // ---------- OBJ 解析（v / vt / f） ----------
-  function parseOBJ(text) {
-    var pos = [], uv = [], faces = [];
-    var lines = text.split('\n');
-    for (var i = 0; i < lines.length; i++) {
-      var l = lines[i].trim();
-      if (!l) continue;
-      var c = l[0];
-      if (c === 'v') {
-        var p = l.split(/\s+/);
-        if (p[0] === 'v') pos.push(+p[1], +p[2], +p[3]);
-        else if (p[0] === 'vt') uv.push(+p[1], +p[2]);
-      } else if (c === 'f') {
-        var parts = l.split(/\s+/), ids = [];
-        for (var j = 1; j < parts.length; j++) {
-          ids.push(parseInt(parts[j].split('/')[0], 10) - 1);
-        }
-        for (var j2 = 1; j2 < ids.length - 1; j2++) {
-          faces.push(ids[0], ids[j2], ids[j2 + 1]);
-        }
-      }
-    }
-    return { pos: pos, uv: uv, faces: faces };
+  function setStatus(msg) { statusEl.textContent = msg; }
+  var sceneReady = false;
+  var scene = document.querySelector('a-scene');
+  if (scene) {
+    scene.addEventListener('loaded', function () { sceneReady = true; loadingEl.style.display = 'none'; setStatus('摄像头已就绪，请对准 Hiro 标识卡'); });
   }
-
-  function buildGeometry(data) {
-    var g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(data.pos), 3));
-    g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(data.uv), 2));
-    if (data.faces.length < 65536) {
-      g.setIndex(new THREE.BufferAttribute(new Uint16Array(data.faces), 1));
-    } else {
-      g.setIndex(new THREE.BufferAttribute(new Uint32Array(data.faces), 1));
-    }
-    g.computeVertexNormals();
-    return g;
-  }
-
-  function bronzeMaterial(cb) {
-    var tex = new THREE.TextureLoader().load('https://cdn.jsdelivr.net/gh/2192735223/qijizhixing@master/ar-bronze/assets/ding_diffuse.jpg', function () {
-      cb(new THREE.MeshStandardMaterial({ map: tex, metalness: 0.3, roughness: 0.55 }));
-    }, undefined, function () {
-      cb(new THREE.MeshStandardMaterial({ color: 0x6b4423, metalness: 0.6, roughness: 0.4 }));
-    });
-    return tex;
-  }
-
-  function fetchModel(cb) {
-    fetch('https://cdn.jsdelivr.net/gh/2192735223/qijizhixing@master/ar-bronze/assets/ding.obj').then(function (r) { return r.text(); }).then(function (t) {
-      cb(null, parseOBJ(t));
-    }).catch(function (e) { cb(e); });
-  }
-
+  // ---------- 3D 预览 fallback ----------
   function buildDingMesh(cb) {
-    fetchModel(function (err, data) {
-      if (err) { cb(err, null); return; }
-      var g = buildGeometry(data);
-      bronzeMaterial(function (mat) {
-        var mesh = new THREE.Mesh(g, mat);
-        mesh.castShadow = true;
-        cb(null, mesh);
-      });
-    });
+    if (!THREE) { cb(new Error('THREE 不可用')); return; }
+    var loader = new THREE.GLTFLoader ? new THREE.GLTFLoader() : null;
+    if (loader) {
+      var url = 'https://cdn.jsdelivr.net/gh/2192735223/qijizhixing@master/ar-bronze/';
+      var modelUrl = url + 'ding.gltf';
+      loader.load(modelUrl, function (gltf) { cb(null, gltf.scene); }, undefined, function () { buildFallbackMesh(cb); });
+    } else {
+      buildFallbackMesh(cb);
+    }
   }
-
-  // ---------- A-Frame 组件：在标识卡上挂载真实鼎模型 ----------
-  if (window.AFRAME) {
-    AFRAME.registerComponent('ding-model', {
-      init: function () {
-        var self = this;
-        buildDingMesh(function (err, mesh) {
-          if (err) { setStatus('模型加载失败，请刷新重试'); return; }
-          self.el.setObject3D('ding', mesh);
-          loadingEl.style.display = 'none';
-          setStatus('摄像头已启动，请对准 Hiro 标识卡');
-        });
-      }
-    });
+  function buildFallbackMesh(cb) {
+    var g = new THREE.Group();
+    var body = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.55, 0.7, 12), new THREE.MeshStandardMaterial({ color: 0x6b4423, roughness: 0.7, metalness: 0.2 }));
+    body.position.y = 0.35; g.add(body);
+    var rim = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.48, 0.06, 12), new THREE.MeshStandardMaterial({ color: 0x8a6a3a, roughness: 0.6, metalness: 0.3 }));
+    rim.position.y = 0.7; g.add(rim);
+    var leg1 = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.06, 0.25, 8), new THREE.MeshStandardMaterial({ color: 0x5a3a1a, roughness: 0.8 }));
+    leg1.position.set(0.25, 0.125, 0.25); g.add(leg1);
+    var leg2 = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.06, 0.25, 8), new THREE.MeshStandardMaterial({ color: 0x5a3a1a, roughness: 0.8 }));
+    leg2.position.set(-0.25, 0.125, 0.25); g.add(leg2);
+    var leg3 = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.06, 0.25, 8), new THREE.MeshStandardMaterial({ color: 0x5a3a1a, roughness: 0.8 }));
+    leg3.position.set(0, 0.125, -0.3); g.add(leg3);
+    var handle1 = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.025, 6, 10, Math.PI), new THREE.MeshStandardMaterial({ color: 0x7a5a2a, roughness: 0.7 }));
+    handle1.position.set(0.35, 0.75, 0); handle1.rotation.z = Math.PI / 2; g.add(handle1);
+    var handle2 = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.025, 6, 10, Math.PI), new THREE.MeshStandardMaterial({ color: 0x7a5a2a, roughness: 0.7 }));
+    handle2.position.set(-0.35, 0.75, 0); handle2.rotation.z = Math.PI / 2; g.add(handle2);
+    cb(null, g);
   }
-
-  // ---------- 3D 预览兜底（使用同一真实模型） ----------
-  var fbShown = false;
   function showFallback(reason) {
-    if (fbShown) return;
-    fbShown = true;
     loadingEl.style.display = 'none';
     var fb = document.getElementById('fallback');
     fb.classList.add('show');
-    if (reason) {
-      document.getElementById('fbMsg').textContent = reason + ' · 已切换 3D 预览（鼠标 / 手指拖拽旋转）';
-    }
+    if (reason) { document.getElementById('fbMsg').textContent = reason + ' · 已切换 3D 预览（手指拖拽旋转）'; }
     startPreview();
   }
-
   function startPreview() {
     var c = document.getElementById('view3d');
     var r = new THREE.WebGLRenderer({ canvas: c, antialias: true });
@@ -171,92 +119,40 @@ a-scene{position:fixed;inset:0;width:100vw;height:100vh;z-index:1}
     var s = new THREE.Scene();
     s.background = new THREE.Color(0x2a1f12);
     var cam = new THREE.PerspectiveCamera(45, c.clientWidth / c.clientHeight, 0.1, 20);
-    cam.position.set(1.7, 1.3, 1.9);
-    cam.lookAt(0, 0.4, 0);
+    cam.position.set(1.7, 1.3, 1.9); cam.lookAt(0, 0.4, 0);
     s.add(new THREE.HemisphereLight(0xfff7e8, 0x3a2a1a, 0.9));
-    var dir = new THREE.DirectionalLight(0xffffff, 1.0);
-    dir.position.set(2, 4, 2);
-    s.add(dir);
-    var root = new THREE.Group();
-    s.add(root);
+    var dir = new THREE.DirectionalLight(0xffffff, 1.0); dir.position.set(2, 4, 2); s.add(dir);
+    var root = new THREE.Group(); s.add(root);
     var loaded = false;
     buildDingMesh(function (err, mesh) {
-      if (err) {
-        document.getElementById('fbMsg').textContent = '模型加载失败，请检查网络后刷新';
-        return;
-      }
-      mesh.scale.setScalar(0.9);
-      root.add(mesh);
-      loaded = true;
+      if (err) { document.getElementById('fbMsg').textContent = '模型加载失败，请检查网络后刷新'; return; }
+      mesh.scale.setScalar(0.9); root.add(mesh); loaded = true;
     });
     var dragging = false, lx = 0, ly = 0;
     c.addEventListener('mousedown', function (e) { dragging = true; lx = e.clientX; ly = e.clientY; });
     window.addEventListener('mouseup', function () { dragging = false; });
     c.addEventListener('touchstart', function (e) { dragging = true; lx = e.touches[0].clientX; ly = e.touches[0].clientY; }, { passive: true });
     window.addEventListener('touchend', function () { dragging = false; });
-    window.addEventListener('mousemove', function (e) {
-      if (!dragging) return;
-      root.rotation.y += (e.clientX - lx) * 0.01;
-      root.rotation.x = Math.max(-1.2, Math.min(1.2, root.rotation.x + (e.clientY - ly) * 0.01));
-      lx = e.clientX; ly = e.clientY;
-    });
-    window.addEventListener('touchmove', function (e) {
-      if (!dragging) return;
-      root.rotation.y += (e.touches[0].clientX - lx) * 0.01;
-      root.rotation.x = Math.max(-1.2, Math.min(1.2, root.rotation.x + (e.touches[0].clientY - ly) * 0.01));
-      lx = e.touches[0].clientX; ly = e.touches[0].clientY;
-    }, { passive: true });
+    window.addEventListener('mousemove', function (e) { if (!dragging) return; root.rotation.y += (e.clientX - lx) * 0.01; root.rotation.x = Math.max(-1.2, Math.min(1.2, root.rotation.x + (e.clientY - ly) * 0.01)); lx = e.clientX; ly = e.clientY; });
+    window.addEventListener('touchmove', function (e) { if (!dragging) return; root.rotation.y += (e.touches[0].clientX - lx) * 0.01; root.rotation.x = Math.max(-1.2, Math.min(1.2, root.rotation.x + (e.touches[0].clientY - ly) * 0.01)); lx = e.touches[0].clientX; ly = e.touches[0].clientY; }, { passive: true });
     window.addEventListener('resize', rs);
-    (function anim() {
-      requestAnimationFrame(anim);
-      if (!dragging && loaded) root.rotation.y += 0.005;
-      r.render(s, cam);
-    })();
+    (function anim() { requestAnimationFrame(anim); if (!dragging && loaded) root.rotation.y += 0.005; r.render(s, cam); })();
   }
-
-  // ---------- 启动逻辑：等待 arjs system 就绪（最长 15s），慢/失败均不误判 ----------
   window.addEventListener('load', function () {
     var mk = document.getElementById('mymarker');
-    if (mk) {
-      mk.addEventListener('markerFound', function () { setStatus('✅ 已识别 Hiro 标识，青铜鼎现身！'); });
-      mk.addEventListener('markerLost', function () { setStatus('请对准 Hiro 标识卡'); });
-    }
-
+    if (mk) { mk.addEventListener('markerFound', function () { setStatus('✅ 已识别 Hiro 标识，青铜鼎现身！'); }); mk.addEventListener('markerLost', function () { setStatus('请对准 Hiro 标识卡'); }); }
     var waited = 0;
     var t = setInterval(function () {
-      // arjs 在 AR.js 3.4.5 中是 system（AFRAME.systems.arjs），不是 component
       var arjs = window.AFRAME && AFRAME.systems && AFRAME.systems.arjs;
-      if (arjs) {
-        clearInterval(t);
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-          showFallback('当前环境不支持摄像头（请通过 localhost 或 https 访问）');
-          return;
-        }
-        setStatus('摄像头已就绪，请对准 Hiro 标识卡');
-        return;
-      }
+      if (arjs) { clearInterval(t); if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { showFallback('当前环境不支持摄像头（请通过 localhost 或 https 访问）'); return; } setStatus('摄像头已就绪，请对准 Hiro 标识卡'); return; }
       waited += 500;
-      if (window.__aframeLoadFailed || (waited >= 3000 && !window.AFRAME)) {
-        clearInterval(t);
-        showFallback('A-Frame 核心加载失败（网络不佳），请刷新重试');
-        return;
-      }
-      if (window.__arjsLoadFailed) {
-        clearInterval(t);
-        showFallback('AR 引擎加载失败（网络不佳），请刷新重试');
-        return;
-      }
-      if (waited >= 15000) {
-        clearInterval(t);
-        showFallback('AR 引擎加载超时，已切换 3D 预览');
-      }
+      if (window.__aframeLoadFailed || (waited >= 3000 && !window.AFRAME)) { clearInterval(t); showFallback('A-Frame 核心加载失败（网络不佳），请刷新重试'); return; }
+      if (window.__arjsLoadFailed) { clearInterval(t); showFallback('AR 引擎加载失败（网络不佳），请刷新重试'); return; }
+      if (waited >= 15000) { clearInterval(t); showFallback('AR 引擎加载超时，已切换 3D 预览'); }
     }, 500);
   });
-
-  // Hiro 标识使用官方 ARToolKit 图案（data/markers/hiro_border_p0.png）
 })();
 </script>
-
 <a-scene id="arscene" embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono; cameraParametersUrl: ../data/data/camera_para.dat;">
   <a-marker id="mymarker" type="pattern" url="../data/data/patt.hiro">
     <a-entity id="ding" ding-model scale="0.55 0.55 0.55"></a-entity>
@@ -266,6 +162,5 @@ a-scene{position:fixed;inset:0;width:100vw;height:100vh;z-index:1}
   <a-entity light="type: directional; color: #fff; intensity: 0.8" position="2 4 3"></a-entity>
   <a-entity camera></a-entity>
 </a-scene>
-
 </body>
 </html>
