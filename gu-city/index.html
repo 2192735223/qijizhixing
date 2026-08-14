@@ -2,19 +2,19 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
 <title>齐国故城 · 千年复原</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#1a1209;color:#f0e6d3;overflow:hidden;height:100vh;display:flex;flex-direction:column}
-header{text-align:center;padding:1rem;background:linear-gradient(180deg,rgba(42,31,18,.92) 0%,transparent 100%);z-index:10}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#1a1209;color:#f0e6d3;overflow:hidden;height:100vh;display:flex;flex-direction:column;-webkit-tap-highlight-color:transparent}
+header{text-align:center;padding:calc(.8rem + env(safe-area-inset-top,0px)) 1rem .7rem;background:linear-gradient(180deg,rgba(42,31,18,.92) 0%,transparent 100%);z-index:10}
 header h1{font-size:1.25rem;font-weight:700;color:#e8c97a;letter-spacing:4px}
 header p{font-size:.72rem;color:#b8a080;margin-top:.3rem;letter-spacing:2px}
 .wrap{flex:1;position:relative;touch-action:none}
 canvas{display:block;width:100%;height:100%}
-.info{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);background:rgba(42,31,18,.92);border:1px solid #b8860b;border-radius:8px;padding:.7rem 1.2rem;max-width:92%;font-size:.78rem;color:#c4a970;text-align:center;line-height:1.7;backdrop-filter:blur(4px);z-index:20}
-.back{position:fixed;bottom:1rem;left:1rem;color:#c4a970;text-decoration:none;font-size:.8rem;background:rgba(42,31,18,.9);border:1px solid #4a3820;padding:.4rem .9rem;border-radius:6px;z-index:20}
-footer{text-align:center;padding:.4rem;font-size:.65rem;color:#6a5a40;background:#1a1209}
+.info{position:fixed;bottom:calc(1rem + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:rgba(42,31,18,.92);border:1px solid #b8860b;border-radius:8px;padding:.6rem 1rem;max-width:88%;font-size:.75rem;color:#c4a970;text-align:center;line-height:1.6;backdrop-filter:blur(4px);z-index:20}
+.back{position:fixed;bottom:calc(1rem + env(safe-area-inset-bottom,0px));left:1rem;color:#c4a970;text-decoration:none;font-size:.8rem;background:rgba(42,31,18,.9);border:1px solid #4a3820;padding:.45rem .9rem;border-radius:6px;z-index:20}
+footer{text-align:center;padding:.4rem .4rem calc(.4rem + env(safe-area-inset-bottom,0px));font-size:.65rem;color:#6a5a40;background:#1a1209}
 #loading{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(26,18,9,.95);z-index:50}
 #loading .spin{width:44px;height:44px;border:4px solid #4a3820;border-top-color:#b8860b;border-radius:50%;animation:rot 1s linear infinite}
 #loading p{color:#c4a970;font-size:.9rem;margin-top:1rem;letter-spacing:2px}
@@ -292,6 +292,8 @@ footer{text-align:center;padding:.4rem;font-size:.65rem;color:#6a5a40;background
 
   // ---------- 相机与控制 ----------
   var theta = 0.72, phi = 1.02, radius = 105;
+  // 竖屏时拉远初始视角，让横向故城完整入镜
+  if (window.innerWidth < window.innerHeight) { radius = 140; phi = 1.12; }
   function resize() {
     var w = canvas.clientWidth, h = canvas.clientHeight;
     renderer.setSize(w, h, false);
@@ -307,8 +309,9 @@ footer{text-align:center;padding:.4rem;font-size:.65rem;color:#6a5a40;background
   updateCam();
 
   var drag = false, lx = 0, ly = 0, lastAct = Date.now();
+  var pinchDist = 0;
   function onDown(x, y) { drag = true; lx = x; ly = y; lastAct = Date.now(); }
-  function onUp() { drag = false; }
+  function onUp() { drag = false; pinchDist = 0; }
   function onMove(x, y) {
     if (!drag) return;
     theta -= (x - lx) * 0.006;
@@ -319,10 +322,29 @@ footer{text-align:center;padding:.4rem;font-size:.65rem;color:#6a5a40;background
   }
   canvas.addEventListener('mousedown', function (e) { onDown(e.clientX, e.clientY); });
   window.addEventListener('mouseup', onUp);
-  canvas.addEventListener('touchstart', function (e) { onDown(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
-  window.addEventListener('touchend', onUp);
+  canvas.addEventListener('touchstart', function (e) {
+    if (e.touches.length === 2) {
+      pinchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      drag = false;
+    } else if (e.touches.length === 1) {
+      onDown(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: true });
+  window.addEventListener('touchend', function (e) { if (e.touches.length < 2) onUp(); });
   window.addEventListener('mousemove', function (e) { onMove(e.clientX, e.clientY); });
-  window.addEventListener('touchmove', function (e) { onMove(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+  window.addEventListener('touchmove', function (e) {
+    if (e.touches.length === 2) {
+      var d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      if (pinchDist > 0) {
+        radius = Math.max(45, Math.min(190, radius * (pinchDist / d)));
+        updateCam();
+      }
+      pinchDist = d;
+      lastAct = Date.now();
+    } else if (e.touches.length === 1) {
+      onMove(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: true });
   canvas.addEventListener('wheel', function (e) {
     e.preventDefault();
     radius = Math.max(45, Math.min(190, radius + e.deltaY * 0.06));

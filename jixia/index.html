@@ -2,12 +2,12 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
 <title>稷下学宫 · 百家争鸣</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#1a1209;color:#f0e6d3;min-height:100vh;background-image:radial-gradient(ellipse at 30% 20%,#3d2b1a 0%,#1a1209 70%);padding:1rem;max-width:640px;margin:0 auto}
-header{text-align:center;padding:1.5rem 1rem 1rem;border-bottom:1px solid #4a3820;margin-bottom:1.5rem}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#1a1209;color:#f0e6d3;min-height:100vh;background-image:radial-gradient(ellipse at 30% 20%,#3d2b1a 0%,#1a1209 70%);padding:1rem;max-width:640px;margin:0 auto;-webkit-tap-highlight-color:transparent}
+header{text-align:center;padding:calc(1.5rem + env(safe-area-inset-top,0px)) 1rem 1rem;border-bottom:1px solid #4a3820;margin-bottom:1.5rem}
 header h1{font-size:1.6rem;font-weight:700;background:linear-gradient(135deg,#e8c97a,#b8860b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:4px}
 header p{font-size:.85rem;color:#b8a080;margin-top:.5rem;letter-spacing:2px}
 .progress{display:flex;align-items:center;gap:.5rem;margin-bottom:2rem;padding:0 .5rem}
@@ -19,7 +19,7 @@ header p{font-size:.85rem;color:#b8a080;margin-top:.5rem;letter-spacing:2px}
 .q-title{font-size:1rem;color:#c4a970;margin-bottom:1rem;line-height:1.6}
 .q-title .num{color:#b8860b;font-weight:700;font-size:1.1rem;margin-right:.5rem}
 .options{display:flex;flex-direction:column;gap:.6rem}
-.opt{background:#1a1209;border:1px solid #4a3820;border-radius:8px;padding:.9rem 1rem;cursor:pointer;transition:all .2s ease;font-size:.95rem;color:#f0e6d3;text-align:left;font-family:inherit;width:100%}
+.opt{background:#1a1209;border:1px solid #4a3820;border-radius:8px;padding:.9rem 1rem;cursor:pointer;transition:all .2s ease;font-size:.95rem;color:#f0e6d3;text-align:left;font-family:inherit;width:100%;min-height:48px;-webkit-tap-highlight-color:transparent}
 .opt:hover:not(:disabled){border-color:#b8860b;background:#2a1f12;transform:translateX(2px)}
 .opt:disabled{cursor:default}
 .opt.correct{background:linear-gradient(145deg,#3d4a1a,#2a3812);border-color:#8aaa1a;color:#d8e8a8}
@@ -28,7 +28,7 @@ header p{font-size:.85rem;color:#b8a080;margin-top:.5rem;letter-spacing:2px}
 .feedback{margin-top:1rem;padding:.9rem 1rem;border-radius:8px;font-size:.85rem;line-height:1.6;animation:fadeIn .3s ease}
 .feedback.right{background:rgba(138,170,26,.15);border:1px solid #8aaa1a;color:#d8e8a8}
 .feedback.wrong{background:rgba(170,58,26,.15);border:1px solid #aa3a1a;color:#e8a8a8}
-.next-btn{display:block;width:100%;margin-top:1rem;padding:.9rem;background:linear-gradient(135deg,#b8860b,#8a6509);color:#1a1209;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:2px}
+.next-btn{display:block;width:100%;margin-top:1rem;padding:.9rem;background:linear-gradient(135deg,#b8860b,#8a6509);color:#1a1209;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:2px;min-height:48px;-webkit-tap-highlight-color:transparent}
 .next-btn:hover{background:linear-gradient(135deg,#d4a02b,#a88519)}
 .result{text-align:center;padding:2rem 1rem;animation:fadeIn .5s ease}
 .result h2{font-size:1.5rem;color:#b8860b;margin-bottom:1rem;letter-spacing:3px}
@@ -44,7 +44,7 @@ header p{font-size:.85rem;color:#b8a080;margin-top:.5rem;letter-spacing:2px}
 .review-item .ok{color:#8aaa1a;font-weight:600}
 .review-item .ng{color:#aa3a1a;font-weight:600}
 .back{display:block;text-align:center;margin:1.5rem auto;color:#b8860b;text-decoration:none;font-size:.85rem;border:1px solid #b8860b;padding:.5rem 1.5rem;border-radius:6px;width:fit-content}
-footer{text-align:center;padding:1.5rem 1rem 1rem;font-size:.7rem;color:#6a5a40;line-height:1.6;border-top:1px solid #2a1f12;margin-top:2rem}
+footer{text-align:center;padding:1.5rem 1rem calc(1rem + env(safe-area-inset-bottom,0px));font-size:.7rem;color:#6a5a40;line-height:1.6;border-top:1px solid #2a1f12;margin-top:2rem}
 </style>
 </head>
 <body>
