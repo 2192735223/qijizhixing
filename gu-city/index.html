@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -25,17 +25,16 @@ footer{position:relative;z-index:1;text-align:center;padding:.2rem .4rem calc(.2
 </style>
 </head>
 <body>
-<div class="overlay-header">
-  <div class="brand">
-    <span class="name">齐国故城 · 千年复原</span>
-    <span class="sub">临淄 · 约前1046—前221</span>
-  </div>
-</div>
+<header>
+  <h1>齐国故城 · 千年复原</h1>
+  <p>临淄 · 约公元前 1046 年 — 前 221 年</p>
+</header>
 <div class="wrap"><canvas id="city"></canvas></div>
-<div class="info">故城由大城与小城组成 · 手指拖拽旋转 · 双指缩放</div>
-<a class="back" href="../">← 返回</a>
+<div class="info">故城由大城与小城组成 · 拖拽旋转 · 滚轮缩放</div>
+<a class="back" href="../">← 返回主页</a>
 <footer>布局参考：临淄齐国故城遗址 · 材质：Poly Haven CC0</footer>
 <div id="loading"><div class="spin"></div><p>正在复原齐国故城…</p></div>
+
 <script src="../libs/three.min.js"></script>
 <script>
 (function () {
@@ -47,66 +46,324 @@ footer{position:relative;z-index:1;text-align:center;padding:.2rem .4rem calc(.2
   scene.background = new THREE.Color(SKY);
   scene.fog = new THREE.Fog(SKY, 160, 340);
   var camera = new THREE.PerspectiveCamera(50, 1, 0.5, 500);
+
   var manager = new THREE.LoadingManager();
-  manager.onLoad = function () { loadingEl.style.opacity = '0'; setTimeout(function () { loadingEl.style.display = 'none'; }, 500); };
-  setTimeout(function () { loadingEl.style.opacity = '0'; setTimeout(function () { loadingEl.style.display = 'none'; }, 500); }, 15000);
+  manager.onLoad = function () {
+    loadingEl.style.opacity = '0';
+    setTimeout(function () { loadingEl.style.display = 'none'; }, 500);
+  };
+  // 兑底：若个别纹理请求挂起导致 onLoad 不触发，15 秒后强制隐藏 loading
+  setTimeout(function () {
+    loadingEl.style.opacity = '0';
+    setTimeout(function () { loadingEl.style.display = 'none'; }, 500);
+  }, 15000);
+
   var TEXV = '?v=5';
   function tex(src, rx, ry) {
-    var t = new THREE.TextureLoader(manager).load(src + TEXV, function () {}, undefined, function () { console.error('texture fail: ' + src); });
-    t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rx || 1, ry || 1); t.anisotropy = 8; return t;
+    var t = new THREE.TextureLoader(manager).load(src + TEXV, function () {}, undefined, function () {
+      console.error('纹理加载失败: ' + src);
+    });
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.repeat.set(rx || 1, ry || 1);
+    t.anisotropy = 8;
+    return t;
   }
-  function mat(map, opts) { return new THREE.MeshStandardMaterial(Object.assign({ map: map, roughness: 0.92, metalness: 0.04 }, opts || {})); }
-  function matB(diff, bump, rx, ry, opts, bs) { var m = mat(tex('assets/' + diff, rx, ry), opts); var b = tex('assets/' + bump, rx, ry); m.bumpMap = b; m.bumpScale = bs || 0.04; return m; }
-  var groundMat = matB('patterned_cobblestone_02_diff.jpg','patterned_cobblestone_02_bump.png',10,10,{roughness:0.9,metalness:0.02});
-  var roadMat = matB('patterned_cobblestone_02_diff.jpg','patterned_cobblestone_02_bump.png',1,1,{roughness:0.8});
-  var brickMat = matB('factory_brick_diff.jpg','factory_brick_bump.png',1,1,{roughness:0.85});
-  var woodMat = matB('wooden_planks_diff.jpg','wooden_planks_bump.png',1,1,{roughness:0.78});
-  var clayMat = matB('clay_block_wall_diff.jpg','clay_block_*,1,1,{roughness:0.82});
-  var darkMat = new THREE.MeshStandardMaterial({color:0x3a2a1a,roughness:0.9,metalness:0.05});
-  var roofMat = new THREE.MeshStandardMaterial({color:0x3f4a4d,roughness:0.9,metalness:0.05});
-  var wallMat = matB('clay_block_wall_diff.jpg','clay_block_*,1,1,{roughness:0.85});
-  var waterMat = new THREE.MeshStandardMaterial({color:0x6a8a6a,roughness:0.6,metalness:0.1});
-  var sandMat = new THREE.MeshStandardMaterial({color:0x8a7a50,roughness:0.95});
-  var light = new THREE.HemisphereLight(0xfff7e8,0x3a2a1a,0.8); scene.add(light);
-  var sun = new THREE.DirectionalLight(0xffffff,0.6); sun.position.set(40,60,40); scene.add(sun);
-  var amb = new THREE.AmbientLight(0x8a7a60,0.15); scene.add(amb);
-  function add(m){scene.add(m);return m}
-  function box(w,h,d,x,y,z,m){var mm=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);mm.position.set(x,y,z);return add(mm)}
-  function gable(w,h,d,x,y,z,rh,m){var g=new THREE.BufferGeometry();var hw=w/2,hd=d/2;var v=new Float32Array([-hw,0,-hd,hw,0,-hd,hw,0,hd,-hw,0,hd,0,h,0]);g.setAttribute('position',new THREE.BufferAttribute(v,3));g.setIndex([0,1,4,1,2,4,2,3,4,3,0,4,0,2,1,0,3,2]);g.computeVertexNormals();var mm=new THREE.Mesh(g,m);mm.position.set(x,y,z);return add(mm)}
-  add(new THREE.Mesh(new THREE.PlaneGeometry(150,150),new THREE.MeshStandardMaterial({map:tex('assets/ground_dirt.jpg',30,30),roughness:0.95,metalness:0.01}))).rotation.x=-Math.PI/2;
-  // City walls
-  var ws = 0.32, wh = 4.2;
-  function wallSeg(pts) { for (var i = 0; i < pts.length - 1; i++) { var dx = pts[i+1][0] - pts[i][0], dz = pts[i+1][1] - pts[i][1]; var len = Math.sqrt(dx*dx + dz*dz), cx = (pts[i][0] + pts[i+1][0]) / 2, cz = (pts[i][1] + pts[i+1][1]) / 2; var m = new THREE.Mesh(new THREE.BoxGeometry(len, wh, ws), wallMat); m.position.set(cx, wh/2, cz); m.rotation.y = Math.atan2(dx, dz); add(m); } }
-  var OUTER = [[-53,-48],[-53,48],[53,48],[53,-48],[-53,-48]]; wallSeg(OUTER);
-  var INNER = [[-40,-38],[-40,38],[40,38],[40,-38],[-40,-38]]; wallSeg(INNER);
-  function build(x, y, z, w, d, h, m) { box(w, h, d, x, y + h/2, z, m); }
-  function hbuild(x, y, z, w, d, h, m) { build(x, y, z, w, d, h, m); }
-  // Palace complex
-  for (var px = -20; px <= 20; px += 6) { for (var pz = -20; pz <= 20; pz += 6) { if (Math.random() > 0.3) { var bh = 2.2 + Math.random() * 1.5; build(px, 0, pz, 3.5, 3.5, bh, brickMat); if (Math.random() > 0.5) gable(5, 1.0, 5, px, bh, pz, roofMat); } } }
-  // Roads
-  box(0.6, 0.05, 86, 0, 0.03, 0, roadMat); box(86, 0.05, 0.6, 0, 0.03, 0, roadMat);
-  // Labels
-  function label(text, x, y, z) { var cv = document.createElement('canvas'); cv.width = 512; cv.height = 128; var ctx = cv.getContext('2d'); ctx.fillStyle = 'rgba(30,22,12,0.78)'; var r = 18; ctx.beginPath(); ctx.moveTo(r,0); ctx.lineTo(512-r,0); ctx.quadraticCurveTo(512,0,512,r); ctx.lineTo(512,128-r); ctx.quadraticCurveTo(512,128,512-r,128); ctx.lineTo(r,128); ctx.quadraticCurveTo(0,128,0,128-r); ctx.lineTo(0,r); ctx.quadraticCurveTo(0,0,r,0); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#b8860b'; ctx.lineWidth = 4; ctx.stroke(); ctx.font = 'bold 58px \"Microsoft YaHei\",\"PingFang SC\",sans-serif'; ctx.fillStyle = '#f0e6d3'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, 256, 66); var sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv), transparent: true, depthTest: false })); sp.position.set(x, y, z); sp.scale.set(9, 2.4, 1); add(sp); }
-  label('大城', 33, 7.5, -32); label('小城', -30, 8.5, -38); label('宫殿区', -30, 7.2, -20); label('市集', 0, 5, 14); label('淄河', 58.5, 5.5, 24);
-  // Camera controls
+  function mat(map, opts) {
+    return new THREE.MeshStandardMaterial(Object.assign({ map: map, roughness: 0.92, metalness: 0.04 }, opts || {}));
+  }
+  function matB(diff, bump, rx, ry, opts, bs) {
+    var m = mat(tex('assets/' + diff, rx, ry), opts);
+    var b = tex('assets/' + bump, rx, ry);
+    m.bumpMap = b;
+    m.bumpScale = bs || 0.04;
+    return m;
+  }
+
+  // ---------- 材质（Poly Haven CC0 + 凹凸贴图） ----------
+  // 地面：鹅卵石纹理（有明显石子轮廓）
+  var groundMat = matB('patterned_cobblestone_02_diff.jpg', 'patterned_cobblestone_02_bump.png', 10, 10, { roughness: 0.9, metalness: 0.02 });
+  var roadMat = matB('patterned_cobblestone_02_diff.jpg', 'patterned_cobblestone_02_bump.png', 1, 1, { roughness: 0.8 });
+  var brickMat = matB('factory_brick_diff.jpg', 'factory_brick_bump.png', 1, 1, { roughness: 0.85 });
+  var woodMat = matB('wooden_planks_diff.jpg', 'wooden_planks_bump.png', 1, 1, { roughness: 0.78 });
+  var clayMat = matB('clay_block_wall_diff.jpg', 'clay_block_wall_bump.png', 1, 1, { roughness: 0.95 }); // 民居夯土墙
+  var sandMat = matB('damp_sand_diff.jpg', 'damp_sand_bump.png', 6, 1, { roughness: 0.98 });
+  var roofMat = matB('factory_brick_diff.jpg', 'factory_brick_bump.png', 5, 4, { color: 0x8a8a8a, roughness: 0.85, metalness: 0.05 }); // 青灰砖瓦顶
+  var darkMat = new THREE.MeshStandardMaterial({ color: 0x3a3028, roughness: 0.95 });
+  var baseMat = matB('factory_brick_diff.jpg', 'factory_brick_bump.png', 4, 4); // 砖砌台基
+  var waterMat = new THREE.MeshStandardMaterial({ color: 0x2e5a66, roughness: 0.25, metalness: 0.1, transparent: true, opacity: 0.88 });
+
+  function add(m) { scene.add(m); return m; }
+  function box(w, h, d, x, z, m, y) {
+    var mm = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+    mm.position.set(x, (y === undefined ? h / 2 : y + h / 2), z);
+    return add(mm);
+  }
+  function cone(r, h, x, z, y, m) {
+    var mm = new THREE.Mesh(new THREE.ConeGeometry(r, h, 4), m || roofMat);
+    mm.position.set(x, y, z);
+    mm.rotation.y = Math.PI / 4;
+    return add(mm);
+  }
+
+  // 悬山式屋顶（人字坡棱柱，用 ExtrudeGeometry 保证法线正确）
+  function gableGeo(span, rise, len) {
+    var shape = new THREE.Shape();
+    shape.moveTo(-span / 2, 0); shape.lineTo(span / 2, 0); shape.lineTo(0, rise); shape.closePath();
+    var geo = new THREE.ExtrudeGeometry(shape, { depth: len, bevelEnabled: false });
+    geo.translate(0, 0, -len / 2);
+    return geo;
+  }
+  function gable(w, h, d, x, z, y, m, rotY) {
+    var geo = gableGeo(w, h, d);
+    var mm = new THREE.Mesh(geo, m || roofMat);
+    mm.position.set(x, y, z);
+    if (rotY) mm.rotation.y = rotY;
+    return add(mm);
+  }
+
+  // ---------- 光照 ----------
+  // r160 物理光照单位：强度需比旧版 legacy 模式高约 π 倍
+  scene.add(new THREE.HemisphereLight(0xfff2dc, 0x4a3a2a, 3.0));
+  var sun = new THREE.DirectionalLight(0xfff0d0, 3.5);
+  sun.position.set(70, 100, 45);
+  scene.add(sun);
+
+  // ---------- 展台底座 ----------
+  // y=-2.6: 底面在 y=-2.6，顶面在 y=0（地下基座，顶面与地面齐平）
+  box(136, 2.6, 126, 0, 0, new THREE.MeshStandardMaterial({ color: 0x5a4a38, roughness: 0.95 }), -2.6);
+
+  // ---------- 地面（夯土） ----------
+  var ground = new THREE.Mesh(new THREE.PlaneGeometry(132, 122), groundMat);
+  ground.rotation.x = -Math.PI / 2;
+  ground.position.y = 0.02;  // 略高于底座顶面(y=0)，避免 z-fighting
+  add(ground);
+
+
+
+  // ---------- 道路（鹅卵石） ----------
+  function road(w, d, x, z, rx, rz) {
+    var m = matB('patterned_cobblestone_02_diff.jpg', 'patterned_cobblestone_02_bump.png', rx || 1, rz || 1, { roughness: 0.8 });
+    return box(w, 0.1, d, x, z, m, 0.02);
+  }
+  road(104, 6, 0, 0, 26, 1);   // 东西主干道
+  road(6, 94, 0, 0, 1, 23);    // 南北主干道
+  road(4, 34, -30, -21, 1, 8); // 小城内南北路
+  road(26, 4, -21, -20, 6, 1); // 小城内东西路
+  road(4, 6, -30, -1.5, 1, 1); // 小城南门连接主街
+
+  // ---------- 外城墙（大城）夯土筑 ----------
+  var WNS = matB('clay_block_wall_diff.jpg', 'clay_block_wall_bump.png', 16, 1, { roughness: 0.95 });
+  var WEW = matB('clay_block_wall_diff.jpg', 'clay_block_wall_bump.png', 14, 1, { roughness: 0.95 });
+  // 北墙（中间留北门）
+  box(47, 3, 1.7, -26.5, -45, WNS); box(47, 3, 1.7, 26.5, -45, WNS);
+  // 南墙（中间留南门）
+  box(47, 3, 1.7, -26.5, 45, WNS); box(47, 3, 1.7, 26.5, 45, WNS);
+  // 东墙（中间留东门）
+  box(1.7, 3, 42, 50, -21, WEW); box(1.7, 3, 42, 50, 21, WEW);
+  // 西墙（中间留西门）
+  box(1.7, 3, 42, -50, -21, WEW); box(1.7, 3, 42, -50, 21, WEW);
+  // 城墙顶收边
+  box(100, 0.5, 1.9, 0, -45, matB('clay_block_wall_diff.jpg', 'clay_block_wall_bump.png', 28, 1), 3.05);
+  box(100, 0.5, 1.9, 0, 45, matB('clay_block_wall_diff.jpg', 'clay_block_wall_bump.png', 28, 1), 3.05);
+  box(1.9, 0.5, 90, 50, 0, matB('clay_block_wall_diff.jpg', 'clay_block_wall_bump.png', 26, 1), 3.05);
+  box(1.9, 0.5, 90, -50, 0, matB('clay_block_wall_diff.jpg', 'clay_block_wall_bump.png', 26, 1), 3.05);
+  // 四角角楼
+  [[-48, -43], [48, -43], [-48, 43], [48, 43]].forEach(function (p) {
+    box(3.4, 4.2, 3.4, p[0], p[1], brickMat, 0);
+    cone(2.4, 1.1, p[0], p[1], 4.2 + 0.55, roofMat);
+  });
+  // 城门门楼（东 / 西 / 南 / 北）
+  function gate(x, z) {
+    box(6.5, 3.6, 5.2, x, z, brickMat);
+    gable(8.0, 1.6, 6.8, x, z, 3.6, roofMat);
+  }
+  gate(50, 0); gate(-50, 0); gate(0, 45); gate(0, -45);
+
+  // ---------- 小城（西北角宫殿区） ----------
+  var B = brickMat;
+  box(40, 2.5, 1.3, -30, -45, B);        // 小城北墙
+  box(1.3, 2.5, 40, -50, -25, B);        // 小城西墙
+  box(19, 2.5, 1.3, -40.5, -5, B);       // 小城南墙（西段）
+  box(19, 2.5, 1.3, -19.5, -5, B);       // 小城南墙（东段，留南门）
+  box(1.3, 2.5, 19, -10, -32.5, B);      // 小城东墙（北段）
+  box(1.3, 2.5, 19, -10, -12.5, B);      // 小城东墙（南段，留东门）
+  // 小城门楼
+  gate(-30, -5); gate(-10, -20);
+
+  // ---------- 桓公台 · 高台宫殿 ----------
+  box(18, 1.6, 12, -30, -25, B, 0);      // 高台
+  [[-30, -25]].forEach(function (p) {
+    box(18.4, 0.5, 12.4, p[0], p[1], B, 1.6);
+  });
+  box(10, 2.6, 6.5, -30, -25, woodMat, 1.6);   // 正殿
+  cone(6.6, 1.9, -30, -25, 1.6 + 2.6 + 0.95, roofMat);
+  box(5, 1.9, 4, -38.5, -25, woodMat, 1.6);    // 东配殿
+  cone(3.6, 1.1, -38.5, -25, 1.6 + 1.9 + 0.55, roofMat);
+  box(5, 1.9, 4, -21.5, -25, woodMat, 1.6);    // 西配殿
+  cone(3.6, 1.1, -21.5, -25, 1.6 + 1.9 + 0.55, roofMat);
+  box(7, 1.6, 5, -30, -31, woodMat, 1.6);      // 前殿
+  cone(4.6, 1.2, -30, -31, 1.6 + 1.6 + 0.6, roofMat);
+
+  // ---------- 大城民居（居民区，确定性随机） ----------
+  var seed = 20260814;
+  function rnd() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+  var zones = [
+    [22, -30], [36, -30], [43, -30],
+    [22, -10], [36, -10], [43, -10],
+    [22, 12], [36, 12], [43, 12],
+    [-38, 18], [-24, 28], [-18, 16], [-36, 36]
+  ];
+  function house(x, z) {
+    var w = 2.4 + rnd() * 0.8, h = 1.5 + rnd() * 0.4, d = 2.4 + rnd() * 0.8;
+    var g = new THREE.Group();
+    g.position.set(x, 0, z);
+    g.rotation.y = rnd() > 0.5 ? Math.PI / 2 : 0;
+    var base = new THREE.Mesh(new THREE.BoxGeometry(w + 0.7, 0.3, d + 0.7), baseMat);
+    base.position.y = 0.15; g.add(base);                                   // 夯土台基
+    var body = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), clayMat);
+    body.position.y = 0.3 + h / 2; g.add(body);                            // 夯土墙体
+    var roof = new THREE.Mesh(gableGeo(w + 0.9, 0.7 + rnd() * 0.2, d + 1.1), roofMat);
+    roof.position.y = 0.3 + h; g.add(roof);                                // 悬山屋顶
+    scene.add(g);
+  }
+  zones.forEach(function (zc) {
+    for (var i = -1; i <= 1; i++) {
+      for (var j = -1; j <= 1; j++) {
+        house(zc[0] + i * 5.6 + (rnd() - 0.5) * 0.6, zc[1] + j * 5.6 + (rnd() - 0.5) * 0.6);
+      }
+    }
+  });
+
+  // ---------- 市集（大城中部） ----------
+  box(15, 0.12, 11, 0, 14, matB('patterned_cobblestone_02_diff.jpg', 'patterned_cobblestone_02_bump.png', 3, 2), 0.03);
+  for (var si = 0; si < 8; si++) {
+    var a = (si / 8) * Math.PI * 2;
+    var sx = Math.cos(a) * 6, sz = 14 + Math.sin(a) * 4;
+    box(2.0, 1.7, 2.0, sx, sz, woodMat);
+    gable(3.0, 0.85, 3.0, sx, sz, 1.7, roofMat);
+  }
+
+  // ---------- 冶铁作坊（南门内侧） ----------
+  [[-3.5, 38], [3.5, 38], [0, 41.8]].forEach(function (p) {
+    box(3.6, 2.4, 3.0, p[0], p[1], darkMat);
+    gable(4.6, 1.1, 4.0, p[0], p[1], 2.4, roofMat);
+  });
+  [[-5, 36.5], [5, 36.5]].forEach(function (p) {
+    var ch = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.38, 3, 8), darkMat);
+    ch.position.set(p[0], 1.5, p[1]);
+    add(ch);
+  });
+
+  // ---------- 淄河（东城墙外） ----------
+  box(12, 0.12, 92, 58.5, 0, waterMat, 0.02);
+  box(2.6, 0.16, 92, 51.3, 0, sandMat, 0.05);
+
+  // ---------- 地名标注 ----------
+  function label(text, x, y, z) {
+    var cv = document.createElement('canvas');
+    cv.width = 512; cv.height = 128;
+    var ctx = cv.getContext('2d');
+    ctx.fillStyle = 'rgba(30,22,12,0.78)';
+    var r = 18;
+    ctx.beginPath();
+    ctx.moveTo(r, 0); ctx.lineTo(512 - r, 0); ctx.quadraticCurveTo(512, 0, 512, r);
+    ctx.lineTo(512, 128 - r); ctx.quadraticCurveTo(512, 128, 512 - r, 128);
+    ctx.lineTo(r, 128); ctx.quadraticCurveTo(0, 128, 0, 128 - r);
+    ctx.lineTo(0, r); ctx.quadraticCurveTo(0, 0, r, 0); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = '#b8860b'; ctx.lineWidth = 4; ctx.stroke();
+    ctx.font = 'bold 58px "Microsoft YaHei","PingFang SC",sans-serif';
+    ctx.fillStyle = '#f0e6d3'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(text, 256, 66);
+    var sp = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: new THREE.CanvasTexture(cv), transparent: true, depthTest: false
+    }));
+    sp.position.set(x, y, z);
+    sp.scale.set(9, 2.4, 1);
+    add(sp);
+  }
+  label('大城', 33, 7.5, -32);
+  label('小城 · 宫殿区', -30, 8.5, -38);
+  label('桓公台', -30, 7.2, -20);
+  label('市集', 0, 5, 14);
+  label('冶铁作坊', 0, 5, 34);
+  label('居民区', 25, 5.5, 22);
+  label('淄河', 58.5, 5.5, 24);
+  label('东门', 53.5, 5.5, 0);
+  label('西门', -53.5, 5.5, 0);
+  label('南门', 0, 5.5, 48);
+  label('北门', 0, 5.5, -48);
+
+  // ---------- 相机与控制 ----------
   var theta = 0.72, phi = 1.02, radius = 105;
+  // 竖屏时拉远初始视角，让横向故城完整入镜
   if (window.innerWidth < window.innerHeight) { radius = 140; phi = 1.12; }
-  function resize() { var w = canvas.clientWidth, h = canvas.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
-  function updateCam() { camera.position.x = radius * Math.sin(phi) * Math.cos(theta); camera.position.z = radius * Math.sin(phi) * Math.sin(theta); camera.position.y = radius * Math.cos(phi); camera.lookAt(0, 2.5, 0); }
+  function resize() {
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  function updateCam() {
+    camera.position.x = radius * Math.sin(phi) * Math.cos(theta);
+    camera.position.z = radius * Math.sin(phi) * Math.sin(theta);
+    camera.position.y = radius * Math.cos(phi);
+    camera.lookAt(0, 2.5, 0);
+  }
   updateCam();
-  var drag = false, lx = 0, ly = 0, lastAct = Date.now(), pinchDist = 0;
+
+  var drag = false, lx = 0, ly = 0, lastAct = Date.now();
+  var pinchDist = 0;
   function onDown(x, y) { drag = true; lx = x; ly = y; lastAct = Date.now(); }
   function onUp() { drag = false; pinchDist = 0; }
-  function onMove(x, y) { if (!drag) return; theta -= (x - lx) * 0.006; phi = Math.max(0.25, Math.min(Math.PI/2-0.08, phi - (y - ly) * 0.006)); lx = x; ly = y; lastAct = Date.now(); updateCam(); }
-  canvas.addEventListener('mousedown', function(e) { onDown(e.clientX, e.clientY); });
+  function onMove(x, y) {
+    if (!drag) return;
+    theta -= (x - lx) * 0.006;
+    phi = Math.max(0.25, Math.min(Math.PI / 2 - 0.08, phi - (y - ly) * 0.006));
+    lx = x; ly = y;
+    lastAct = Date.now();
+    updateCam();
+  }
+  canvas.addEventListener('mousedown', function (e) { onDown(e.clientX, e.clientY); });
   window.addEventListener('mouseup', onUp);
-  canvas.addEventListener('touchstart', function(e) { if (e.touches.length === 2) { pinchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); drag = false; } else if (e.touches.length === 1) { onDown(e.touches[0].clientX, e.touches[0].clientY); } }, { passive: true });
-  window.addEventListener('touchend', function(e) { if (e.touches.length < 2) onUp(); });
-  window.addEventListener('mousemove', function(e) { onMove(e.clientX, e.clientY); });
-  window.addEventListener('touchmove', function(e) { if (e.touches.length === 2) { var d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); if (pinchDist > 0) { radius = Math.max(45, Math.min(190, radius * (pinchDist / d))); updateCam(); } pinchDist = d; lastAct = Date.now(); } else if (e.touches.length === 1) { onMove(e.touches[0].clientX, e.touches[0].clientY); } }, { passive: true });
-  canvas.addEventListener('wheel', function(e) { e.preventDefault(); radius = Math.max(45, Math.min(190, radius + e.deltaY * 0.06)); updateCam(); }, { passive: false });
-  window.addEventListener('resize', resize); resize();
-  (function anim() { requestAnimationFrame(anim); if (!drag && Date.now() - lastAct > 4000) { theta += 0.0016; updateCam(); } renderer.render(scene, camera); })();
+  canvas.addEventListener('touchstart', function (e) {
+    if (e.touches.length === 2) {
+      pinchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      drag = false;
+    } else if (e.touches.length === 1) {
+      onDown(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: true });
+  window.addEventListener('touchend', function (e) { if (e.touches.length < 2) onUp(); });
+  window.addEventListener('mousemove', function (e) { onMove(e.clientX, e.clientY); });
+  window.addEventListener('touchmove', function (e) {
+    if (e.touches.length === 2) {
+      var d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      if (pinchDist > 0) {
+        radius = Math.max(45, Math.min(190, radius * (pinchDist / d)));
+        updateCam();
+      }
+      pinchDist = d;
+      lastAct = Date.now();
+    } else if (e.touches.length === 1) {
+      onMove(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: true });
+  canvas.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    radius = Math.max(45, Math.min(190, radius + e.deltaY * 0.06));
+    updateCam();
+  }, { passive: false });
+  window.addEventListener('resize', resize);
+  resize();
+
+  (function anim() {
+    requestAnimationFrame(anim);
+    if (!drag && Date.now() - lastAct > 4000) {
+      theta += 0.0016;
+      updateCam();
+    }
+    renderer.render(scene, camera);
+  })();
 })();
 </script>
 </body>

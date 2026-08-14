@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -25,7 +25,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 /* ===== Quiz card (full-height, centered) ===== */
 .quiz-area{flex:1;display:flex;flex-direction:column;justify-content:center;padding-bottom:1rem}
-.card{background:linear-gradient(165deg,rgba(20,16,12,.85),rgba(12,10,8,.92));border:1px solid rgba(74,58,40(.15);border-radius:16px;padding:1.8rem 1.2rem;animation:fadeIn .35s ease;position:relative}
+.card{background:linear-gradient(165deg,rgba(20,16,12,.85),rgba(12,10,8,.92));border:1px solid rgba(74,58,40,.15);border-radius:16px;padding:1.8rem 1.2rem;animation:fadeIn .35s ease;position:relative}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(205,127,50,.2),transparent);border-radius:16px 16px 0 0}
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .q-title{font-size:.95rem;color:#c4a970;margin-bottom:1.2rem;line-height:1.7;letter-spacing:.5px}
@@ -40,7 +40,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .feedback{margin-top:1rem;padding:.8rem 1rem;border-radius:10px;font-size:.82rem;line-height:1.7;animation:fadeIn .3s ease;letter-spacing:.3px}
 .feedback.right{background:rgba(60,80,30,.1);border:1px solid rgba(138,170,26,.15);color:#b8c898}
 .feedback.wrong{background:rgba(80,30,30,.1);border:1px solid rgba(170,58,26,.15);color:#c8a0a0}
-.next-btn{display:block;width:100%;margin-top:1rem;padding:.85rem;background:linear-gradient(135deg,rgba(205,127,50,.12),rgba(120,70,25,.06));color:#d4c5a9;border:1px solid rgba(205,127,50(.2);border-radius:12px;font-size:.9rem;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:3px;min-height:50px;transition:all .3s ease}
+.next-btn{display:block;width:100%;margin-top:1rem;padding:.85rem;background:linear-gradient(135deg,rgba(205,127,50,.12),rgba(120,70,25,.06));color:#d4c5a9;border:1px solid rgba(205,127,50,.2);border-radius:12px;font-size:.9rem;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:3px;min-height:50px;transition:all .3s ease}
 .next-btn:active{transform:scale(.97);border-color:rgba(205,127,50,.35)}
 
 /* ===== Result ===== */
@@ -52,33 +52,38 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .result .stamp-wrap{display:inline-block;margin:1rem auto;padding:1.5rem 2rem;border:2px solid rgba(205,127,50,.2);border-radius:50%;transform:rotate(-5deg);background:radial-gradient(circle,rgba(205,127,50,.06) 0%,transparent 70%);box-shadow:0 0 50px rgba(205,127,50,.08)}
 .result .stamp-text{font-size:1rem;color:#b8966a;font-weight:700;letter-spacing:3px;line-height:1.5}
 .result .stamp-text small{display:block;font-size:.6rem;color:#4a3a28;margin-top:.4rem;font-weight:400;letter-spacing:2px}
-.review{margin-top:1.5rem;text-align:left;background:linear-gradient(165deg,rgba(20,16,12,.8),rgba(12,10,8,.9));border:1px solid rgba(74,58,40(.1);border-radius:14px;padding:1rem}
+.review{margin-top:1.5rem;text-align:left;background:linear-gradient(165deg,rgba(20,16,12,.8),rgba(12,10,8,.9));border:1px solid rgba(74,58,40,.1);border-radius:14px;padding:1rem}
 .review h3{color:#6a5a40;font-size:.8rem;margin-bottom:.8rem;letter-spacing:2px}
-.review-item{font-size:.75rem;padding:.5rem 0;border-bottom:1px dashed rgba(74,58,40(.08);color:#8a7a60;line-height:1.6}
+.review-item{font-size:.75rem;padding:.5rem 0;border-bottom:1px dashed rgba(74,58,40,.08);color:#8a7a60;line-height:1.6}
 .review-item:last-child{border:none}
 .review-item .ok{color:#8aaa1a;font-weight:600}
 .review-item .ng{color:#aa3a1a;font-weight:600}
 
 /* ===== Footer & Back ===== */
 footer{text-align:center;padding:1rem .5rem calc(.5rem + env(safe-area-inset-bottom,0px));font-size:.55rem;color:#2a1a10;line-height:1.6;flex-shrink:0}
-.back{display:block;text-align:center;margin:.5rem auto;color:#4a3a28;text-decoration:none;font-size:.7rem;border:1px solid rgba(74,58,40(.15);padding:.3rem 1.2rem;border-radius:20px;width:fit-content;transition:all .3s ease;flex-shrink:0}
-.back:active{color:#cd7f32;border-color:rgba(205,127,50(.2);background:rgba(20,16,12,.9)}
+.back{display:block;text-align:center;margin:.5rem auto;color:#4a3a28;text-decoration:none;font-size:.7rem;border:1px solid rgba(74,58,40,.15);padding:.3rem 1.2rem;border-radius:20px;width:fit-content;transition:all .3s ease;flex-shrink:0}
+.back:active{color:#cd7f32;border-color:rgba(205,127,50,.2);background:rgba(20,16,12,.9)}
 </style>
 </head>
 <body>
 <div class="page">
-<div class="hero">
+<header>
   <span class="emblem">🎓</span>
   <h1>稷下学宫</h1>
-  <div class="sub">百家争鸣 · 思想盛宴</div>
+  <p>百家争鸣 · 思想盛宴</p>
+</header>
+<div class="progress">
+<div class="progress-bar">
+<div class="progress-fill" id="pf"></div>
 </div>
-<div class="progress-wrap">
-  <div class="progress-bar"><div class="progress-fill" id="pf"></div></div>
-  <div class="progress-text" id="pt">0/10</div>
+<div class="progress-text" id="pt">0/10</div>
 </div>
-<div id="quiz" class="quiz-area"></div>
-<div id="result" class="result-area" style="display:none"></div>
-<footer>资料来源：《史记·田齐世家》《汉书·艺文志》</footer>
+<div id="quiz"></div>
+<div id="result"></div>
+<footer>
+资料来源：司马迁《史记·田齐世家》、班固《汉书·艺文志》（公有领域，距今超过 2000 年）<br>
+齐迹智行实践团 · 2026 暑假社会实践
+</footer>
 <a class="back" href="../">← 返回主页</a>
 </div>
 <script>
@@ -98,22 +103,29 @@ var questions = [
 var cur = 0, score = 0, answered = [];
 function render() {
   var el = document.getElementById("quiz");
-  if (cur >= questions.length) { el.style.display = "none"; showResult(); return; }
-  el.style.display = "flex";
-  document.getElementById("result").style.display = "none";
+  if (cur >= questions.length) { el.innerHTML = ""; showResult(); return; }
   var q = questions[cur];
-  document.getElementById("pf").style.width = (cur / questions.length * 100) + "%";
+  var pct = (cur / questions.length) * 100;
+  document.getElementById("pf").style.width = pct + "%";
   document.getElementById("pt").textContent = (cur + 1) + "/" + questions.length;
-  var h = ['<div class="card">','<div class="q-title"><span class="num">第' + (cur + 1) + '题</span>' + q.q + '</div>','<div class="options">'];
-  for (var j = 0; j < q.opts.length; j++) h.push('<button class="opt" data-i="' + j + '">' + String.fromCharCode(65 + j) + '. ' + q.opts[j] + '</button>');
+  var h = [];
+  h.push('<div class="card">');
+  h.push('<div class="q-title"><span class="num">第 ' + (cur + 1) + ' 题</span>' + q.q + '</div>');
+  h.push('<div class="options">');
+  for (var j = 0; j < q.opts.length; j++) {
+    h.push('<button class="opt" data-i="' + j + '">' + String.fromCharCode(65 + j) + '. ' + q.opts[j] + '</button>');
+  }
   h.push('</div></div>');
   el.innerHTML = h.join("");
-  el.querySelectorAll(".opt").forEach(function(b){ b.addEventListener("click", function(){ pick(parseInt(b.dataset.i)); }); });
+  var btns = el.querySelectorAll(".opt");
+  for (var k = 0; k < btns.length; k++) {
+    (function(b){ b.addEventListener("click", function(){ pick(parseInt(b.dataset.i)); }); })(btns[k]);
+  }
 }
 function pick(i) {
   var q = questions[cur];
   var btns = document.querySelectorAll(".opt");
-  btns.forEach(function(b){ b.disabled = true; });
+  for (var m = 0; m < btns.length; m++) btns[m].disabled = true;
   var ok = (i === q.ans);
   if (ok) score++;
   answered.push({q: q.q, picked: i, correct: q.ans, ok: ok, opts: q.opts, why: q.why});
@@ -122,22 +134,28 @@ function pick(i) {
   var fb = document.createElement("div");
   fb.className = "feedback " + (ok ? "right" : "wrong");
   fb.innerHTML = (ok ? "答对了！" : "答错了") + "<br>" + q.why;
-  document.querySelector(".card").appendChild(fb);
+  var card = document.querySelector(".card");
+  card.appendChild(fb);
   var nb = document.createElement("button");
   nb.className = "next-btn";
   nb.textContent = (cur === questions.length - 1) ? "查看结果" : "下一题";
   nb.onclick = function(){ cur++; render(); };
-  document.querySelector(".card").appendChild(nb);
-  document.getElementById("pf").style.width = ((cur + 1) / questions.length * 100) + "%";
+  card.appendChild(nb);
+  document.getElementById("pf").style.width = ((cur + 1) / questions.length) * 100 + "%";
 }
 function showResult() {
   document.getElementById("pf").style.width = "100%";
   document.getElementById("pt").textContent = questions.length + "/" + questions.length;
-  var r = document.getElementById("result"); r.style.display = "flex";
-  var h = ['<div class="result">','<h2>答题完成</h2>','<div class="score">得分：<span class="num">' + score + '</span> / ' + questions.length + '</div>','<div class="stamp-wrap"><div class="stamp-text">稷下学宫<br>知识小达人<small>齐迹智行实践团 · 2026</small></div></div>','<div class="review"><h3>答题回顾</h3>'];
+  var r = document.getElementById("result");
+  var h = [];
+  h.push('<div class="result">');
+  h.push('<h2>答题完成</h2>');
+  h.push('<div class="score">得分：<span class="num">' + score + '</span> / ' + questions.length + '</div>');
+  h.push('<div class="stamp"><div class="stamp-text">稷下学宫<br>知识小达人<small>齐迹智行实践团 · 2026</small></div></div>');
+  h.push('<div class="review"><h3>答题回顾</h3>');
   for (var n = 0; n < answered.length; n++) {
     var a = answered[n];
-    h.push('<div class="review-item">第' + (n + 1) + '题：' + (a.ok ? '<span class="ok">正确</span>' : '<span class="ng">错误</span>') + '（你的答案：' + a.opts[a.picked] + '，正确答案：' + a.opts[a.correct] + '）</div>');
+    h.push('<div class="review-item">第 ' + (n + 1) + ' 题：' + (a.ok ? '<span class="ok">正确</span>' : '<span class="ng">错误</span>') + '（你的答案：' + a.opts[a.picked] + '，正确答案：' + a.opts[a.correct] + '）</div>');
   }
   h.push('</div></div>');
   r.innerHTML = h.join("");
