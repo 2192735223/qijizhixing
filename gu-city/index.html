@@ -29,8 +29,8 @@ footer{text-align:center;padding:.4rem;font-size:.65rem;color:#6a5a40;background
 <div class="wrap"><canvas id="city"></canvas></div>
 <div class="info">故城由大城与小城组成，小城居西北为宫殿区，大城为居民与工商区<br>鼠标 / 手指拖拽旋转 · 滚轮缩放 · 淄河沿东城墙外流过</div>
 <a class="back" href="../">← 返回主页</a>
-<footer>布局参考：临淄齐国故城遗址 · 材质：Poly Haven CC0 · v5</footer>
-<div id="loading"><div class="spin"></div><p>正在复原齐国故城 v5…</p></div>
+<footer>布局参考：临淄齐国故城遗址 · 材质：Poly Haven CC0 · v6</footer>
+<div id="loading"><div class="spin"></div><p>正在复原齐国故城 v6…</p></div>
 
 <script src="../libs/three.min.js"></script>
 <script>
@@ -49,6 +49,11 @@ footer{text-align:center;padding:.4rem;font-size:.65rem;color:#6a5a40;background
     loadingEl.style.opacity = '0';
     setTimeout(function () { loadingEl.style.display = 'none'; }, 500);
   };
+  // 兑底：若个别纹理请求挂起导致 onLoad 不触发，15 秒后强制隐藏 loading
+  setTimeout(function () {
+    loadingEl.style.opacity = '0';
+    setTimeout(function () { loadingEl.style.display = 'none'; }, 500);
+  }, 15000);
 
   var TEXV = '?v=5';
   function tex(src, rx, ry) {
@@ -114,8 +119,9 @@ footer{text-align:center;padding:.4rem;font-size:.65rem;color:#6a5a40;background
   }
 
   // ---------- 光照 ----------
-  scene.add(new THREE.HemisphereLight(0xfff2dc, 0x4a3a2a, 0.9));
-  var sun = new THREE.DirectionalLight(0xfff0d0, 1.25);
+  // r160 物理光照单位：强度需比旧版 legacy 模式高约 π 倍
+  scene.add(new THREE.HemisphereLight(0xfff2dc, 0x4a3a2a, 3.0));
+  var sun = new THREE.DirectionalLight(0xfff0d0, 3.5);
   sun.position.set(70, 100, 45);
   scene.add(sun);
 
