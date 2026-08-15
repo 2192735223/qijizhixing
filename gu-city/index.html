@@ -35,7 +35,7 @@ footer{position:relative;z-index:1;text-align:center;padding:.2rem .4rem calc(.2
 <footer>布局参考：临淄齐国故城遗址 · 材质：Poly Haven CC0</footer>
 <div id="loading"><div class="spin"></div><p>正在复原齐国故城…</p></div>
 
-<script src="../libs/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@qiancheng219/qijizhixing-assets@1.0.0/libs/three.min.js" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src=&#39;../libs/three.min.js&#39;}"></script>
 <script>
 (function () {
   var loadingEl = document.getElementById('loading');
@@ -58,9 +58,10 @@ footer{position:relative;z-index:1;text-align:center;padding:.2rem .4rem calc(.2
     setTimeout(function () { loadingEl.style.display = 'none'; }, 500);
   }, 15000);
 
-  var TEXV = '?v=6';
+  var TEXV = '';
+  var CDN = 'https://cdn.jsdelivr.net/npm/@qiancheng219/qijizhixing-assets@1.0.0/gu-city/';
   function tex(src, rx, ry) {
-    var t = new THREE.TextureLoader(manager).load(src + TEXV, function () {}, undefined, function () {
+    var t = new THREE.TextureLoader(manager).load(CDN + src + TEXV, function () {}, undefined, function () {
       console.error('纹理加载失败: ' + src);
     });
     t.wrapS = t.wrapT = THREE.RepeatWrapping;
