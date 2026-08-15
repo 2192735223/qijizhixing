@@ -1,0 +1,18 @@
+{
+  "name": "@2192735223/qijizhixing-assets",
+  "version": "1.0.0",
+  "description": "齐迹智行·齐文化 H5/WebAR 静态资源包（jsDelivr 国内加速分发）",
+  "files": [
+    "libs",
+    "ar-bronze",
+    "gu-city",
+    "cuju"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "qijizhixing",
+    "webar",
+    "qilu",
+    "assets"
+  ]
+}
