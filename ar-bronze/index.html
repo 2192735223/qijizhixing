@@ -128,7 +128,20 @@ a-scene{position:fixed;inset:0;width:100vw;height:100vh;z-index:1}
   }
 
   function fetchModel(cb) {
-    fetch('assets/ding.obj').then(function (r) { return r.text(); }).then(function (t) {
+    // 优先加载 gzip 压缩版（obj 文本 3MB → 881KB），DecompressionStream 解压；
+    // 浏览器不支持或解压失败时回退原始 obj。
+    function loadPlain() {
+      return fetch('assets/ding.obj').then(function (r) { return r.text(); });
+    }
+    function loadGz() {
+      return fetch('assets/ding.obj.gz')
+        .then(function (r) { return r.arrayBuffer(); })
+        .then(function (buf) {
+          return new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
+        });
+    }
+    var p = window.DecompressionStream ? loadGz().catch(loadPlain) : loadPlain();
+    p.then(function (t) {
       cb(null, parseOBJ(t));
     }).catch(function (e) { cb(e); });
   }
