@@ -54,7 +54,7 @@ canvas{display:block;width:100%;height:100%}
   <p id="popMsg">蹴鞠起源于战国时期的齐国临淄，是足球的前身！</p>
   <button onclick="this.parentNode.classList.remove('show')">再来一鞠</button>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/@qiancheng219/qijizhixing-assets@1.0.0/libs/three.min.js" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src=&#39;../libs/three.min.js&#39;}"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/three.js/0.160.0/three.min.js" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='../libs/three.min.js'}"></script>
 <script>
 (function () {
   var canvas = document.getElementById('field');
@@ -66,7 +66,7 @@ canvas{display:block;width:100%;height:100%}
 
   var manager = new THREE.LoadingManager();
   function tex(src, rx, ry) {
-    var t = new THREE.TextureLoader(manager).load('https://cdn.jsdelivr.net/npm/@qiancheng219/qijizhixing-assets@1.0.0/cuju/' + src);
+    var t = new THREE.TextureLoader(manager).load('https://cdn.jsdelivr.net/npm/@qiancheng219/qijizhixing-assets@1.0.1/cuju/' + src);
     t.wrapS = t.wrapT = THREE.RepeatWrapping;
     t.repeat.set(rx || 1, ry || 1);
     t.anisotropy = 4;

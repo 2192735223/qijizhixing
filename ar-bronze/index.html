@@ -7,8 +7,8 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>AR 青铜鼎 · 齐迹智行</title>
-<script src="https://cdn.jsdelivr.net/npm/@qiancheng219/qijizhixing-assets@1.0.0/libs/aframe.min.js" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src=&#39;../libs/aframe.min.js&#39;}else{window.__aframeLoadFailed=1}"></script>
-<script src="https://cdn.jsdelivr.net/npm/@qiancheng219/qijizhixing-assets@1.0.0/libs/aframe-ar.js" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src=&#39;../libs/aframe-ar.js&#39;}else{window.__arjsLoadFailed=1}"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/aframe/1.2.0/aframe.min.js" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='../libs/aframe.min.js'}else{window.__aframeLoadFailed=1}"></script>
+<script src="https://cdn.jsdelivr.net/npm/@qiancheng219/qijizhixing-assets@1.0.1/libs/aframe-ar.js" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='../libs/aframe-ar.js'}else{window.__arjsLoadFailed=1}"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#080604;color:#d4c5a9;overflow:hidden;-webkit-tap-highlight-color:transparent}
@@ -119,7 +119,7 @@ a-scene{position:fixed;inset:0;width:100vw;height:100vh;z-index:1}
   }
 
   function bronzeMaterial(cb) {
-    var tex = new THREE.TextureLoader().load('https://cdn.jsdelivr.net/npm/@qiancheng219/qijizhixing-assets@1.0.0/ar-bronze/assets/ding_diffuse.jpg', function () {
+    var tex = new THREE.TextureLoader().load('https://cdn.jsdelivr.net/npm/@qiancheng219/qijizhixing-assets@1.0.1/ar-bronze/assets/ding_diffuse.jpg', function () {
       cb(new THREE.MeshStandardMaterial({ map: tex, metalness: 0.3, roughness: 0.55 }));
     }, undefined, function () {
       cb(new THREE.MeshStandardMaterial({ color: 0x6b4423, metalness: 0.6, roughness: 0.4 }));
@@ -134,7 +134,7 @@ a-scene{position:fixed;inset:0;width:100vw;height:100vh;z-index:1}
       return fetch('assets/ding.obj').then(function (r) { return r.text(); });
     }
     function loadGz() {
-      return fetch('https://cdn.jsdelivr.net/npm/@qiancheng219/qijizhixing-assets@1.0.0/ar-bronze/assets/ding.obj.gz')
+      return fetch('https://cdn.jsdelivr.net/npm/@qiancheng219/qijizhixing-assets@1.0.1/ar-bronze/assets/ding.obj.gz')
         .then(function (r) { return r.arrayBuffer(); })
         .then(function (buf) {
           return new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
