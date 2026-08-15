@@ -6,10 +6,9 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <title>AR 青铜鼎 · 齐迹智行</title>
-<script src="https://cdn.jsdelivr.net/gh/2192735223/qijizhixing@master/libs/aframe.min.js" onerror="window.__aframeLoadFailed=1"></script>
-<script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.js" onerror="window.__arjsLoadFailed=1"></script>
+<script src="../libs/aframe.min.js" onerror="window.__aframeLoadFailed=1"></script>
+<script src="../libs/aframe-ar.js" onerror="window.__arjsLoadFailed=1"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#080604;color:#d4c5a9;overflow:hidden;-webkit-tap-highlight-color:transparent}
@@ -120,7 +119,7 @@ a-scene{position:fixed;inset:0;width:100vw;height:100vh;z-index:1}
   }
 
   function bronzeMaterial(cb) {
-    var tex = new THREE.TextureLoader().load('https://cdn.jsdelivr.net/gh/2192735223/qijizhixing@master/ar-bronze/assets/ding_diffuse.jpg', function () {
+    var tex = new THREE.TextureLoader().load('assets/ding_diffuse.jpg', function () {
       cb(new THREE.MeshStandardMaterial({ map: tex, metalness: 0.3, roughness: 0.55 }));
     }, undefined, function () {
       cb(new THREE.MeshStandardMaterial({ color: 0x6b4423, metalness: 0.6, roughness: 0.4 }));
@@ -129,7 +128,7 @@ a-scene{position:fixed;inset:0;width:100vw;height:100vh;z-index:1}
   }
 
   function fetchModel(cb) {
-    fetch('https://cdn.jsdelivr.net/gh/2192735223/qijizhixing@master/ar-bronze/assets/ding.obj').then(function (r) { return r.text(); }).then(function (t) {
+    fetch('assets/ding.obj').then(function (r) { return r.text(); }).then(function (t) {
       cb(null, parseOBJ(t));
     }).catch(function (e) { cb(e); });
   }

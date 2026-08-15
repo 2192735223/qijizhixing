@@ -269,9 +269,9 @@ canvas{display:block;width:100%;height:100%}
     camera.fov = portrait ? 72 : 55;
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
-    // 竖屏：高机位加大俯角，让大地、鞠门、城楼在窄高画面里纵向铺开
+    // 竖屏：高机位俯视构图，稍拉近让主体更饱满
     if (portrait) {
-      camera.position.set(0, 7.5, 17.5);
+      camera.position.set(0, 7.0, 15.5);
       camera.lookAt(0, 1.0, -7);
     } else {
       camera.position.set(0, 3.6, 9.5);

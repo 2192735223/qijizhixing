@@ -58,7 +58,7 @@ footer{position:relative;z-index:1;text-align:center;padding:.2rem .4rem calc(.2
     setTimeout(function () { loadingEl.style.display = 'none'; }, 500);
   }, 15000);
 
-  var TEXV = '?v=5';
+  var TEXV = '?v=6';
   function tex(src, rx, ry) {
     var t = new THREE.TextureLoader(manager).load(src + TEXV, function () {}, undefined, function () {
       console.error('纹理加载失败: ' + src);
