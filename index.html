@@ -1,279 +1,456 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 <title>齐迹智行 · 齐文化 AR 互动体验</title>
+<meta name="description" content="山东理工大学「齐迹智行」实践团 · 数字技术赋能齐文化传播：AR 青铜鼎、齐国故城 3D 复原、管仲改革、稷下学宫、蹴鞠互动、青春传承证书。">
 <style>
-/* ===== Reset ===== */
+/* ============================================================
+   齐迹智行 · 主页 V2 —— 美术馆式黑金展陈
+   设计原则（ui-ux-pro-max）：
+   · 对比度 ≥4.5:1（t1≈15:1 / t2≈9:1 / t3≈5.5:1）
+   · 内联 SVG 图标，禁用 emoji 作图标
+   · 允许缩放、支持 prefers-reduced-motion、focus-visible
+   · 移动优先 / 8pt 间距节奏 / 主次分明的信息层级
+   ============================================================ */
+:root{
+  --bg:#0d0b08;
+  --surface:#14110c;
+  --surface-2:#191510;
+  --line:rgba(220,180,110,.14);
+  --line-strong:rgba(220,180,110,.30);
+  --t1:#f2e9d5;   /* 主文字 */
+  --t2:#cdbc9a;   /* 次文字 */
+  --t3:#a89a78;   /* 说明文字 */
+  --t4:#8a7c5e;   /* 仅装饰性元素 */
+  --gold:#d4a04c;
+  --gold-hi:#ecc987;
+  --cinnabar:#c0452f;  /* 印章朱砂 */
+  --qr-bg:#faf7f0;
+  --radius:14px;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+  --space-5:24px; --space-6:32px; --space-8:48px; --space-10:64px;
+  --serif:'Songti SC','STSong','STKaiti','KaiTi','SimSun','Noto Serif CJK SC',serif;
+  --sans:-apple-system,'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif;
+}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#080604;color:#d4c5a9;min-height:100dvh;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--t2);
+  min-height:100dvh;
+  overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
+  line-height:1.6;
+}
+/* 美术馆射灯：顶部金色氛围 + 边缘压暗 */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 120% 46% at 50% -8%,rgba(212,160,76,.10) 0%,transparent 62%),
+    radial-gradient(ellipse 70% 40% at 88% 8%,rgba(192,69,47,.045) 0%,transparent 55%),
+    radial-gradient(ellipse 140% 120% at 50% 50%,transparent 55%,rgba(0,0,0,.42) 100%);
+}
+::selection{background:rgba(212,160,76,.30);color:var(--t1)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
 
-/* ===== Cinematic Background ===== */
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 140% 50% at 50% -10%,rgba(139,115,85,.12) 0%,transparent 60%),radial-gradient(ellipse 80% 60% at 20% 80%,rgba(74,139,122,.06) 0%,transparent 50%),radial-gradient(ellipse 60% 40% at 80% 60%,rgba(139,58,42,.05) 0%,transparent 50%),radial-gradient(ellipse 100% 80% at 50% 50%,rgba(10,8,6,1) 0%,#080604 100%);pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:0 var(--space-5)}
 
-/* ===== Patina Floating Orbs ===== */
-.patina-orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(80px);animation:orbDrift 20s ease-in-out infinite alternate}
-.patina-orb:nth-child(1){width:400px;height:400px;top:-100px;left:-100px;background:rgba(139,115,85,.08);animation-duration:25s}
-.patina-orb:nth-child(2){width:350px;height:350px;bottom:-80px;right:-80px;background:rgba(74,139,122,.06);animation-duration:30s;animation-delay:-5s}
-.patina-orb:nth-child(3){width:250px;height:250px;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(139,58,42,.04);animation-duration:35s;animation-delay:-10s}
-@keyframes orbDrift{0%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.1)}66%{transform:translate(-20px,40px) scale(.95)}100%{transform:translate(30px,20px) scale(1.05)}}
+/* ===== 顶部题签 ===== */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:var(--space-5) 0 0}
+.topbar .brand{display:flex;align-items:center;gap:var(--space-2);text-decoration:none}
+.topbar .brand svg{width:20px;height:20px;color:var(--gold)}
+.topbar .brand span{font-size:.72rem;letter-spacing:4px;color:var(--t3);font-weight:600}
+.topbar .tag{font-size:.62rem;color:var(--t3);letter-spacing:2px;border:1px solid var(--line);padding:.28rem .7rem;border-radius:99px}
 
-/* ===== Bronze Vessel Watermark ===== */
-.bronze-vessel{position:fixed;bottom:10%;right:5%;width:300px;height:400px;pointer-events:none;z-index:0;opacity:.04}
-.bronze-vessel .body{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);width:180px;height:200px;border:2px solid #cd7f32;border-radius:0 0 20px 20px}
-.bronze-vessel .body::before{content:'';position:absolute;top:20px;left:20px;right:20px;bottom:20px;border:1px solid rgba(205,127,50,.3);border-radius:4px;background:repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(205,127,50,.04) 8px,rgba(205,127,50,.04) 9px)}
-.bronze-vessel .body::after{content:'☰';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:3rem;color:rgba(205,127,50,.15);font-family:serif}
-.bronze-vessel .rim{position:absolute;bottom:248px;left:50%;transform:translateX(-50%);width:200px;height:12px;border:2px solid #cd7f32;border-radius:3px;background:rgba(205,127,50,.08)}
-.bronze-vessel .handle-l,.bronze-vessel .handle-r{position:absolute;bottom:200px;width:16px;height:50px;border:2px solid #cd7f32;border-radius:8px;background:rgba(205,127,50,.05)}
-.bronze-vessel .handle-l{left:calc(50% - 110px)}.bronze-vessel .handle-r{right:calc(50% - 110px)}
-.bronze-vessel .leg-l,.bronze-vessel .leg-r,.bronze-vessel .leg-c{position:absolute;bottom:0;width:14px;height:60px;border:2px solid #cd7f32;border-radius:0 0 6px 6px;background:rgba(205,127,50,.05)}
-.bronze-vessel .leg-l{left:calc(50% - 70px);transform:skewX(-3deg)}.bronze-vessel .leg-r{right:calc(50% - 70px);transform:skewX(3deg)}.bronze-vessel .leg-c{left:calc(50% - 7px);height:55px}
+/* ===== Hero ===== */
+.hero{position:relative;text-align:center;padding:calc(var(--space-10) + env(safe-area-inset-top,0px)) 0 var(--space-9)}
+.hero .overline{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.66rem;letter-spacing:5px;color:var(--t3);
+  margin-bottom:var(--space-5);
+}
+.hero .overline::before,.hero .overline::after{content:'';width:22px;height:1px;background:linear-gradient(90deg,transparent,var(--line-strong));display:inline-block}
+.hero .overline::after{background:linear-gradient(90deg,var(--line-strong),transparent)}
+.hero h1{
+  font-family:var(--serif);
+  font-size:clamp(2.9rem,11vw,4.4rem);
+  font-weight:700;color:var(--t1);
+  letter-spacing:.14em;text-indent:.14em;
+  line-height:1.15;
+  text-shadow:0 0 80px rgba(212,160,76,.14);
+}
+.hero h1 .char{display:inline-block;opacity:0;transform:translateY(.35em);animation:charIn .7s cubic-bezier(.2,.7,.3,1) forwards}
+.hero h1 .char:nth-child(1){animation-delay:.15s}
+.hero h1 .char:nth-child(2){animation-delay:.25s}
+.hero h1 .char:nth-child(3){animation-delay:.35s}
+.hero h1 .char:nth-child(4){animation-delay:.45s}
+@keyframes charIn{to{opacity:1;transform:translateY(0)}}
+.hero .divider{display:flex;align-items:center;gap:var(--space-3);justify-content:center;margin:var(--space-5) 0 var(--space-4)}
+.hero .divider::before,.hero .divider::after{content:'';height:1px;width:min(90px,22vw);background:linear-gradient(90deg,transparent,var(--line-strong))}
+.hero .divider::after{background:linear-gradient(90deg,var(--line-strong),transparent)}
+.hero .divider .gem{width:7px;height:7px;background:var(--gold);transform:rotate(45deg);opacity:.75}
+.hero .slogan{font-size:clamp(.86rem,3vw,1rem);color:var(--t2);letter-spacing:4px}
+.hero .slogan em{font-style:normal;color:var(--gold-hi)}
+.hero .seal{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:46px;height:46px;margin-top:var(--space-5);
+  border:2px solid rgba(192,69,47,.75);border-radius:5px;
+  color:rgba(192,69,47,.9);
+  font-family:var(--serif);font-size:.88rem;font-weight:700;letter-spacing:2px;
+  writing-mode:vertical-rl;
+  transform:rotate(5deg);
+  box-shadow:0 0 0 1px rgba(192,69,47,.2),inset 0 0 12px rgba(192,69,47,.08);
+  animation:sealIn .5s cubic-bezier(.34,1.56,.64,1) .9s both;
+}
+@keyframes sealIn{from{opacity:0;transform:rotate(5deg) scale(1.5)}to{opacity:1;transform:rotate(5deg) scale(1)}}
+.hero .meta{margin-top:var(--space-5);font-size:.64rem;color:var(--t3);letter-spacing:2px}
+.hero .scroll-cue{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  margin-top:var(--space-6);
+  font-size:.58rem;letter-spacing:3px;color:var(--t3);
+}
+.hero .scroll-cue .line{width:1px;height:30px;background:linear-gradient(180deg,var(--line-strong),transparent);position:relative;overflow:hidden}
+.hero .scroll-cue .line::after{content:'';position:absolute;top:-8px;left:0;width:1px;height:8px;background:var(--gold);animation:drip 2.2s ease-in-out infinite}
+@keyframes drip{0%{top:-8px;opacity:1}70%{top:30px;opacity:.9}100%{top:30px;opacity:0}}
 
-/* ===== Hero (mobile-first: full-screen portrait) ===== */
-.hero{position:relative;z-index:1;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3rem 1.5rem 4rem;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 120% 50% at 50% 45%,rgba(205,127,50,.05) 0%,transparent 70%);pointer-events:none}
-.hero .overline{font-size:.6rem;letter-spacing:4px;color:#4a3a28;margin-bottom:1.2rem;border:1px solid rgba(74,58,40,.15);padding:.2rem .8rem;border-radius:16px;animation:fadeDown .8s ease .2s both}
-.hero .emblem{font-size:3.6rem;line-height:1;display:block;margin-bottom:.8rem;animation:emblemAppear 1s ease .1s both,emblemFloat 5s ease-in-out 1.5s infinite;filter:drop-shadow(0 0 40px rgba(205,127,50,.2))}
-@keyframes emblemAppear{0%{transform:scale(0) rotate(-180deg);opacity:0}100%{transform:scale(1) rotate(0deg);opacity:1}}
-@keyframes emblemFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.hero h1{font-size:clamp(2.4rem,10vw,3.6rem);font-weight:900;letter-spacing:clamp(8px,3vw,14px);line-height:1.1;color:#d4c5a9;text-shadow:0 0 60px rgba(205,127,50,.15),0 2px 0 rgba(0,0,0,.5);position:relative}
-.hero h1 .char{display:inline-block;opacity:0;transform:translateY(40px) rotateX(-40deg);animation:charReveal .6s ease forwards}
-.hero h1 .char:nth-child(1){animation-delay:.35s}.hero h1 .char:nth-child(2){animation-delay:.45s}.hero h1 .char:nth-child(3){animation-delay:.55s}.hero h1 .char:nth-child(4){animation-delay:.65s}
-@keyframes charReveal{to{opacity:1;transform:translateY(0) rotateX(0)}}
-.hero h1::after{content:'';display:block;width:48px;height:1.5px;background:linear-gradient(90deg,transparent,#cd7f32,transparent);margin:.6rem auto 0}
-.hero .slogan{font-size:clamp(.75rem,2.5vw,.9rem);color:#6a5a40;margin-top:.8rem;letter-spacing:4px;font-weight:300;animation:fadeUp 1s ease .5s both}
-.hero .slogan em{font-style:normal;color:#8a7a60}
-.hero .sub{font-size:.6rem;color:#3a2a1a;margin-top:1rem;letter-spacing:1px;animation:fadeUp 1s ease .7s both}
-.hero .scroll-indicator{position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.3rem;animation:fadeUp 1s ease 1.2s both;color:#3a2a1a;font-size:.55rem;letter-spacing:2px}
-.hero .scroll-indicator .mouse{width:18px;height:28px;border:1.5px solid #3a2a1a;border-radius:9px;position:relative}
-.hero .scroll-indicator .mouse::after{content:'';position:absolute;top:5px;left:50%;transform:translateX(-50%);width:2.5px;height:7px;background:#cd7f32;border-radius:2px;animation:scrollWheel 2s ease-in-out infinite}
-@keyframes scrollWheel{0%,100%{transform:translateX(-50%) translateY(0);opacity:1}50%{transform:translateX(-50%) translateY(7px);opacity:.3}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fadeDown{from{opacity:0;transform:translateY(-15px)}to{opacity:1;transform:translateY(0)}}
+/* ===== 展陈区块 ===== */
+.exhibit{padding:var(--space-9) 0 var(--space-6)}
+.sec-head{text-align:center;margin-bottom:var(--space-6)}
+.sec-head .kicker{font-size:.6rem;letter-spacing:6px;color:var(--t4);text-transform:uppercase;margin-bottom:var(--space-2)}
+.sec-head h2{font-family:var(--serif);font-size:clamp(1.15rem,4.4vw,1.5rem);font-weight:700;color:var(--t1);letter-spacing:6px}
+.sec-head h2 span{color:var(--gold-hi)}
+.sec-head .sub{font-size:.7rem;color:var(--t3);margin-top:var(--space-2);letter-spacing:1px}
+/* 使用场景提示 */
+.usage{display:flex;flex-wrap:wrap;gap:var(--space-2);justify-content:center;margin-bottom:var(--space-6)}
+.usage .chip{display:inline-flex;align-items:center;gap:.4rem;font-size:.64rem;color:var(--t3);border:1px solid var(--line);border-radius:99px;padding:.32rem .85rem;background:rgba(20,17,12,.5)}
+.usage .chip svg{width:12px;height:12px;color:var(--gold);flex-shrink:0}
+.usage .chip b{color:var(--t2);font-weight:600}
 
-/* ===== Section Divider ===== */
-.scroll-divider{position:relative;z-index:1;padding:1.5rem 1rem;text-align:center}
-.scroll-divider .line-group{display:flex;align-items:center;justify-content:center;gap:.8rem;max-width:240px;margin:0 auto}
-.scroll-divider .line-group .stroke{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(205,127,50,.2),transparent)}
-.scroll-divider .line-group .motif{font-size:1rem;color:rgba(205,127,50,.15);letter-spacing:6px;font-family:serif}
-.scroll-divider .label{font-size:.55rem;color:#3a2a1a;letter-spacing:3px;margin-top:.6rem}
+/* ===== 镇馆之宝：AR 大卡 ===== */
+.featured{
+  position:relative;display:block;text-decoration:none;
+  background:linear-gradient(168deg,var(--surface-2),var(--surface) 62%);
+  border:1px solid var(--line-strong);border-radius:var(--radius);
+  padding:var(--space-5);
+  margin-bottom:var(--space-4);
+  overflow:hidden;
+  transition:transform .25s cubic-bezier(.2,.7,.3,1),border-color .25s ease,box-shadow .25s ease;
+}
+.featured::before{ /* 顶部鎏金线 */
+  content:'';position:absolute;top:0;left:8%;right:8%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(212,160,76,.55),transparent);
+}
+.featured::after{ /* 角部光晕 */
+  content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(212,160,76,.10),transparent 70%);pointer-events:none;
+}
+.featured:active{transform:scale(.985);box-shadow:0 12px 40px rgba(0,0,0,.45)}
+@media(hover:hover){
+  .featured:hover{transform:translateY(-3px);border-color:rgba(212,160,76,.5);box-shadow:0 20px 56px rgba(0,0,0,.5)}
+  .featured:hover .go svg{transform:translate(2px,-2px)}
+}
+.featured .row{display:flex;align-items:center;gap:var(--space-4)}
+.featured .info{flex:1;min-width:0}
+.featured .no{font-family:var(--serif);font-size:.66rem;color:var(--gold);letter-spacing:3px;margin-bottom:6px}
+.featured h3{display:flex;align-items:center;gap:.55rem;font-size:1.18rem;font-weight:700;color:var(--t1);letter-spacing:3px;line-height:1.3}
+.featured h3 .badge{font-size:.56rem;font-weight:600;color:var(--gold-hi);border:1px solid rgba(212,160,76,.45);background:rgba(212,160,76,.08);padding:.14rem .5rem;border-radius:6px;letter-spacing:1.5px;white-space:nowrap;flex-shrink:0}
+.featured p{font-size:.76rem;color:var(--t3);margin-top:8px;line-height:1.75}
+.featured .feat-hint{display:flex;align-items:center;gap:.4rem;margin-top:var(--space-3);font-size:.64rem;color:var(--t3)}
+.featured .feat-hint svg{width:13px;height:13px;color:var(--gold);flex-shrink:0}
+.featured .go{display:none}
+/* 二维码 + 取景框 */
+.qr-frame{display:block;position:relative;padding:7px;flex-shrink:0;border-radius:6px;background:rgba(250,247,240,.04)}
+.qr-frame::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(var(--gold),var(--gold)) 0 0/14px 2px no-repeat,
+    linear-gradient(var(--gold),var(--gold)) 0 0/2px 14px no-repeat,
+    linear-gradient(var(--gold),var(--gold)) 100% 0/14px 2px no-repeat,
+    linear-gradient(var(--gold),var(--gold)) 100% 0/2px 14px no-repeat,
+    linear-gradient(var(--gold),var(--gold)) 0 100%/14px 2px no-repeat,
+    linear-gradient(var(--gold),var(--gold)) 0 100%/2px 14px no-repeat,
+    linear-gradient(var(--gold),var(--gold)) 100% 100%/14px 2px no-repeat,
+    linear-gradient(var(--gold),var(--gold)) 100% 100%/2px 14px no-repeat;
+}
+.qr{width:var(--qr,96px);height:var(--qr,96px);background:var(--qr-bg);border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.qr canvas,.qr img{display:block;width:var(--qr,96px);height:var(--qr,96px)}
+.qr-note{font-size:.56rem;color:var(--t3);text-align:center;margin-top:6px;letter-spacing:1px}
+.featured .qr-frame{--qr:118px}
 
-/* ===== Exhibition Section ===== */
-.exhibition{position:relative;z-index:1;padding:.5rem .75rem 1.5rem;max-width:960px;margin:0 auto}
-.exhibition .exh-header{text-align:center;margin-bottom:1.2rem}
-.exhibition .exh-header .kicker{font-size:.55rem;color:#3a2a1a;letter-spacing:4px;border:1px solid rgba(74,58,40,.12);display:inline-block;padding:.15rem .8rem;border-radius:16px;margin-bottom:.5rem}
-.exhibition .exh-header h2{font-size:clamp(1rem,4vw,1.3rem);font-weight:700;color:#b8966a;letter-spacing:3px}
-.exhibition .exh-header h2 span{color:#5a4a35;font-weight:300}
+/* ===== 展品列表 ===== */
+.list{display:grid;grid-template-columns:1fr;gap:var(--space-3)}
+.item{
+  position:relative;display:grid;grid-template-columns:auto 1fr auto;align-items:center;
+  gap:var(--space-4);text-decoration:none;
+  background:linear-gradient(168deg,var(--surface-2),var(--surface));
+  border:1px solid var(--line);border-radius:var(--radius);
+  padding:var(--space-4) var(--space-4);
+  transition:transform .25s cubic-bezier(.2,.7,.3,1),border-color .25s ease;
+}
+.item:active{transform:scale(.985);border-color:var(--line-strong)}
+@media(hover:hover){
+  .item:hover{transform:translateY(-2px);border-color:var(--line-strong)}
+  .item:hover .name{color:var(--gold-hi)}
+}
+.item .ic{
+  width:42px;height:42px;border-radius:11px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--line);background:rgba(212,160,76,.05);
+}
+.item .ic svg{width:20px;height:20px;color:var(--gold)}
+.item .txt{min-width:0}
+.item .meta-line{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;row-gap:.1rem}
+.item .no{font-family:var(--serif);font-size:.6rem;color:var(--t4);letter-spacing:2px;flex-shrink:0}
+.item .name{font-size:.94rem;font-weight:700;color:var(--t1);letter-spacing:2px;transition:color .25s ease;white-space:nowrap}
+.item .badge{font-size:.54rem;color:var(--t3);border:1px solid var(--line);padding:.1rem .45rem;border-radius:5px;letter-spacing:1px;white-space:nowrap}
+.item p{font-size:.68rem;color:var(--t3);margin-top:3px;line-height:1.6;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.item .qr-frame{--qr:92px;padding:6px}
+.item .qr-frame::before{background-size:11px 2px,2px 11px,11px 2px,2px 11px,11px 2px,2px 11px,11px 2px,2px 11px}
+/* 进场渐显 */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.reveal.in{opacity:1;transform:none}
 
-/* ===== Artifact Grid ===== */
-.artifact-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;padding:0}
-.artifact-grid .card-wrap{opacity:0;transform:translateY(24px);transition:opacity .5s ease,transform .5s ease}
-.artifact-grid .card-wrap.reveal{opacity:1;transform:translateY(0)}
-.artifact-grid .card-wrap:nth-child(1){transition-delay:.03s}.artifact-grid .card-wrap:nth-child(2){transition-delay:.08s}
-.artifact-grid .card-wrap:nth-child(3){transition-delay:.13s}.artifact-grid .card-wrap:nth-child(4){transition-delay:.18s}
-.artifact-grid .card-wrap:nth-child(5){transition-delay:.23s}.artifact-grid .card-wrap:nth-child(6){transition-delay:.28s}
+/* ===== 开源 CTA ===== */
+.oss{padding:var(--space-8) 0 var(--space-6)}
+.oss .card{
+  display:flex;align-items:center;gap:var(--space-4);
+  border:1px dashed rgba(220,180,110,.24);border-radius:var(--radius);
+  padding:var(--space-5);text-decoration:none;
+  transition:border-color .25s ease,background .25s ease;
+}
+.oss .card:hover{border-color:var(--line-strong);background:rgba(20,17,12,.5)}
+.oss .mark{width:34px;height:34px;color:var(--t2);flex-shrink:0}
+.oss .txt{flex:1;min-width:0}
+.oss .txt b{display:block;font-size:.86rem;color:var(--t1);letter-spacing:1px;font-weight:600}
+.oss .txt span{font-size:.68rem;color:var(--t3)}
+.oss .arrow{width:18px;height:18px;color:var(--t3);flex-shrink:0;transition:transform .25s ease,color .25s ease}
+.oss .card:hover .arrow{transform:translate(2px,-2px);color:var(--gold)}
 
-/* ===== Card ===== */
-.artifact-grid .card{display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:1.2rem .6rem .9rem;background:linear-gradient(165deg,rgba(20,16,12,.8),rgba(12,10,8,.9));border:1px solid rgba(74,58,40,.3);border-radius:12px;text-decoration:none;color:#d4c5a9;position:relative;overflow:hidden;transition:transform .3s cubic-bezier(.23,1,.32,1),border-color .25s ease,box-shadow .3s ease;-webkit-tap-highlight-color:transparent}
-.artifact-grid .card::before{content:'';position:absolute;inset:0;border-radius:12px;padding:1px;background:linear-gradient(165deg,rgba(205,127,50,0),rgba(205,127,50,.08),rgba(205,127,50,0));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;opacity:0;transition:opacity .3s ease}
-.artifact-grid .card:active{transform:scale(.96);border-color:rgba(205,127,50,.3);box-shadow:0 8px 24px rgba(0,0,0,.4),0 0 20px rgba(205,127,50,.04)}
-.artifact-grid .card:active::before{opacity:1}
-.artifact-grid .card .card-glow{position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 0%,rgba(205,127,50,.03) 0%,transparent 50%);opacity:0;transition:opacity .3s ease;pointer-events:none}
-.artifact-grid .card:active .card-glow{opacity:1}
-.artifact-grid .card .icon-ring{width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(205,127,50,.15);display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 40% 35%,rgba(205,127,50,.06),transparent);transition:transform .3s ease;position:relative;flex-shrink:0}
-.artifact-grid .card:active .icon-ring{transform:scale(.92)}
-.artifact-grid .card .icon{font-size:1.3rem;line-height:1}
-.artifact-grid .card .label{font-size:.82rem;font-weight:600;letter-spacing:1.5px;transition:color .2s ease}
-.artifact-grid .card:active .label{color:#c4a970}
-.artifact-grid .card .badge{font-size:.55rem;background:linear-gradient(135deg,rgba(74,58,40,.5),rgba(55,42,28,.5));padding:.12rem .5rem;border-radius:6px;color:#6a5a40;border:1px solid rgba(74,58,40,.2);letter-spacing:.5px}
-.artifact-grid .card .qr{width:80px;height:80px;margin-top:.15rem;background:#f5f0e8;border-radius:5px;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.35);transition:box-shadow .3s ease;border:1px solid rgba(245,240,232,.08);flex-shrink:0}
-.artifact-grid .card:active .qr{box-shadow:0 3px 12px rgba(0,0,0,.4)}
-.artifact-grid .card .qr canvas,.artifact-grid .card .qr img{display:block;width:80px;height:80px;border-radius:4px}
-.artifact-grid .card .qrcode-hint{font-size:.55rem;color:#3a2a1a;letter-spacing:.5px;transition:color .2s ease}
+/* ===== 页脚 ===== */
+footer{padding:var(--space-6) 0 calc(var(--space-8) + env(safe-area-inset-bottom,0px));text-align:center}
+footer .f-seal{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:34px;height:34px;margin-bottom:var(--space-4);
+  border:1.5px solid rgba(192,69,47,.5);border-radius:4px;
+  color:rgba(192,69,47,.75);font-family:var(--serif);font-size:.62rem;font-weight:700;
+  writing-mode:vertical-rl;letter-spacing:1px;
+}
+footer .links{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--space-2) var(--space-4);margin-bottom:var(--space-3)}
+footer .links a{font-size:.64rem;color:var(--t3);text-decoration:none;letter-spacing:1px;padding:.3rem 0;transition:color .25s ease}
+footer .links a:hover{color:var(--gold-hi)}
+footer .copy{font-size:.6rem;color:var(--t4);letter-spacing:2px}
+footer .copy b{color:var(--t3);font-weight:600}
 
-/* ===== CTA ===== */
-.cta{position:relative;z-index:1;text-align:center;padding:1.5rem .75rem 2.5rem}
-.cta .tip{font-size:.65rem;color:#3a2a1a;margin-bottom:1rem;letter-spacing:1px;line-height:1.5}
-.cta .btn-group{display:flex;flex-direction:column;gap:.6rem;max-width:320px;margin:0 auto}
-.cta .btn{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1.5rem;background:linear-gradient(165deg,rgba(20,16,12,.9),rgba(12,10,8,.95));border:1px solid rgba(205,127,50,.25);border-radius:10px;color:#d4c5a9;text-decoration:none;font-size:.82rem;font-weight:600;letter-spacing:2px;transition:all .3s cubic-bezier(.23,1,.32,1);position:relative;overflow:hidden;min-height:48px}
-.cta .btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(205,127,50,.05),transparent 50%);opacity:0;transition:opacity .3s ease}
-.cta .btn:active{transform:scale(.97);border-color:rgba(205,127,50,.35)}
-.cta .btn:active::before{opacity:1}
-.cta .btn .ic{font-size:1rem}
-.cta .btn-primary{background:linear-gradient(165deg,rgba(205,127,50,.1),rgba(120,70,25,.06));border-color:rgba(205,127,50,.35)}
-.cta .btn-primary:active{background:linear-gradient(165deg,rgba(205,127,50,.15),rgba(140,85,30,.1));border-color:rgba(205,127,50,.5)}
-
-/* ===== Footer ===== */
-footer{position:relative;z-index:1;text-align:center;padding:2rem 1rem;border-top:1px solid rgba(74,58,40,.1);margin-top:.5rem}
-footer .seal{display:inline-block;width:36px;height:36px;border:1.5px solid rgba(139,58,42,.2);border-radius:3px;margin-bottom:.8rem;position:relative;transition:border-color .3s ease}
-footer .seal::before{content:'齐迹';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:.5rem;color:rgba(139,58,42,.25);letter-spacing:1px;writing-mode:vertical-rl;font-family:serif}
-footer .footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:.3rem .8rem;margin-bottom:.6rem}
-footer .footer-links a{color:#3a2a1a;text-decoration:none;font-size:.6rem;transition:color .3s ease;letter-spacing:.5px;padding:.2rem 0}
-footer .footer-links a:active{color:#6a5a40}
-footer .copyright{font-size:.55rem;color:#2a1a10;letter-spacing:1px}
-
-/* ===== Tablet (≥481px) ===== */
-@media(min-width:481px){
-  .artifact-grid{gap:1rem;padding:0 .5rem}
-  .artifact-grid .card{padding:1.4rem .8rem 1rem;gap:.5rem}
-  .artifact-grid .card .icon-ring{width:48px;height:48px}
-  .artifact-grid .card .icon{font-size:1.4rem}
-  .artifact-grid .card .label{font-size:.88rem}
-  .cta .btn-group{flex-direction:row;max-width:none}
-  .cta .btn{padding:.7rem 1.8rem;min-height:auto}
-  .hero .emblem{font-size:4rem}
-  .hero h1{font-size:clamp(2.6rem,8vw,4rem)}
-  .hero .slogan{font-size:.85rem}
-  .exhibition .exh-header h2{font-size:1.2rem}
+/* ===== 响应式 ===== */
+@media(max-width:520px){
+  .featured .row{flex-direction:column;align-items:stretch}
+  .featured .row > div:last-child{align-self:center;text-align:center}
+  .featured h3{flex-wrap:wrap}
+  .item{gap:var(--space-3);padding:var(--space-3)}
+  .item .ic{width:36px;height:36px;border-radius:9px}
+  .item .ic svg{width:17px;height:17px}
+  .item .qr-frame{--qr:84px;padding:5px}
+  .item .qr-frame::before{background-size:9px 2px,2px 9px,9px 2px,2px 9px,9px 2px,2px 9px,9px 2px,2px 9px}
+}
+@media(min-width:640px){
+  .featured .row{gap:var(--space-5)}
+  .featured .go{display:inline-flex;align-items:center;gap:.3rem;font-size:.68rem;color:var(--gold);letter-spacing:2px;margin-top:var(--space-4)}
+  .featured .go svg{width:13px;height:13px;transition:transform .25s ease}
+  .list{grid-template-columns:1fr 1fr}
+  .list .item:last-child:nth-child(odd){grid-column:1/-1}
+}
+@media(min-width:960px){
+  .wrap{padding:0 var(--space-6)}
 }
 
-/* ===== Desktop (≥769px) ===== */
-@media(min-width:769px){
-  .artifact-grid{grid-template-columns:repeat(3,1fr);gap:1.2rem;max-width:920px;margin:0 auto;padding:0 1.5rem}
-  .artifact-grid .card{padding:1.5rem 1rem 1.2rem;cursor:pointer}
-  .artifact-grid .card:hover{transform:translateY(-4px) scale(1.01);border-color:rgba(205,127,50,.35);box-shadow:0 16px 48px rgba(0,0,0,.5),0 0 30px rgba(205,127,50,.05)}
-  .artifact-grid .card:hover::before{opacity:1}
-  .artifact-grid .card:hover .card-glow{opacity:1}
-  .artifact-grid .card:hover .label{color:#e8c97a}
-  .artifact-grid .card:active{transform:scale(.97)}
-  .artifact-grid .card .icon-ring{width:52px;height:52px}
-  .artifact-grid .card .icon{font-size:1.5rem}
-  .artifact-grid .card .label{font-size:.9rem}
-  .exhibition{padding:1rem 1rem 2rem}
-  .exhibition .exh-header{margin-bottom:1.8rem}
-  .hero{padding:2rem 1.5rem 3rem}
-  .hero .emblem{font-size:4.5rem}
-  .hero h1{font-size:clamp(2.8rem,5vw,4.5rem);letter-spacing:clamp(10px,2vw,16px)}
-  .hero .slogan{font-size:.9rem;color:#8a7a60}
-  .hero .overline{font-size:.7rem}
-  .cta .btn-group{max-width:none}
-  .cta .btn:hover{transform:translateY(-2px);border-color:rgba(205,127,50,.4);box-shadow:0 8px 30px rgba(0,0,0,.4),0 0 20px rgba(205,127,50,.05)}
-  .cta .btn:hover::before{opacity:1}
-  .cta .btn-primary:hover{background:linear-gradient(165deg,rgba(205,127,50,.15),rgba(140,85,30,.1));border-color:rgba(205,127,50,.5)}
-  footer .footer-links a:hover{color:#6a5a40}
-  footer .seal:hover{border-color:rgba(139,58,42,.4)}
+/* ===== 弱网/无 JS 占位与 file:// 提示 ===== */
+.qr-file{font-size:.6rem;color:#1a1209;background:var(--qr-bg);padding:.5rem;border-radius:4px;text-align:center}
+
+/* ===== Reduced Motion ===== */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+  .hero h1 .char{opacity:1;transform:none}
+  .hero .seal{opacity:1}
+  .reveal{opacity:1;transform:none}
+  .hero .scroll-cue .line::after{display:none}
 }
 </style>
 </head>
 <body>
 
-<div class="patina-orb"></div>
-<div class="patina-orb"></div>
-<div class="patina-orb"></div>
+<div class="wrap">
 
-<div class="bronze-vessel">
-  <div class="handle-l"></div>
-  <div class="handle-r"></div>
-  <div class="rim"></div>
-  <div class="body"></div>
-  <div class="leg-l"></div>
-  <div class="leg-c"></div>
-  <div class="leg-r"></div>
-</div>
-
-<section class="hero">
-  <div class="overline">齐迹智行 · 暑期社会实践</div>
-  <span class="emblem">🏺</span>
-  <h1><span class="char">齐</span><span class="char">迹</span><span class="char">智</span><span class="char">行</span></h1>
-  <div class="slogan">数字赋能齐文脉 · <em>青春传承齐风骨</em></div>
-  <div class="sub">山东理工大学 · 2026</div>
-  <div class="scroll-indicator">
-    <div class="mouse"></div>
-    <span>向下探索</span>
-  </div>
-</section>
-
-<div class="scroll-divider">
-  <div class="line-group">
-    <span class="stroke"></span>
-    <span class="motif">☰ ☰ ☰</span>
-    <span class="stroke"></span>
-  </div>
-  <div class="label">— 青铜纪 · 文化展陈 —</div>
-</div>
-
-<section class="exhibition">
-  <div class="exh-header">
-    <div class="kicker">✦ 互动体验 ✦</div>
-    <h2>扫码开启 <span>六段齐文化之旅</span></h2>
-  </div>
-  <div class="artifact-grid">
-    <div class="card-wrap"><a class="card" href="ar-bronze/" target="_blank">
-      <div class="card-glow"></div>
-      <div class="icon-ring"><span class="icon">🏺</span></div>
-      <div class="label">AR 青铜鼎</div>
-      <div class="badge">WebAR · 真 AR</div>
-      <div class="qr" id="qr0"></div>
-      <div class="qrcode-hint">扫码进入 AR 体验</div>
-    </a></div>
-    <div class="card-wrap"><a class="card" href="gu-city/" target="_blank">
-      <div class="card-glow"></div>
-      <div class="icon-ring"><span class="icon">🏯</span></div>
-      <div class="label">齐国故城</div>
-      <div class="badge">3D 复原</div>
-      <div class="qr" id="qr1"></div>
-      <div class="qrcode-hint">扫码查看故城复原</div>
-    </a></div>
-    <div class="card-wrap"><a class="card" href="guanzhong/" target="_blank">
-      <div class="card-glow"></div>
-      <div class="icon-ring"><span class="icon">📜</span></div>
-      <div class="label">管仲改革</div>
-      <div class="badge">时间轴</div>
-      <div class="qr" id="qr2"></div>
-      <div class="qrcode-hint">扫码了解改革历程</div>
-    </a></div>
-    <div class="card-wrap"><a class="card" href="jixia/" target="_blank">
-      <div class="card-glow"></div>
-      <div class="icon-ring"><span class="icon">🎓</span></div>
-      <div class="label">稷下学宫</div>
-      <div class="badge">答题互动</div>
-      <div class="qr" id="qr3"></div>
-      <div class="qrcode-hint">扫码参与答题</div>
-    </a></div>
-    <div class="card-wrap"><a class="card" href="cuju/" target="_blank">
-      <div class="card-glow"></div>
-      <div class="icon-ring"><span class="icon">⚽</span></div>
-      <div class="label">蹴鞠</div>
-      <div class="badge">点击互动</div>
-      <div class="qr" id="qr4"></div>
-      <div class="qrcode-hint">扫码玩蹴鞠</div>
-    </a></div>
-    <div class="card-wrap"><a class="card" href="youth/" target="_blank">
-      <div class="card-glow"></div>
-      <div class="icon-ring"><span class="icon">🏅</span></div>
-      <div class="label">青春传承</div>
-      <div class="badge">电子证书</div>
-      <div class="qr" id="qr5"></div>
-      <div class="qrcode-hint">扫码获取证书</div>
-    </a></div>
-  </div>
-</section>
-
-<div class="cta">
-  <div class="tip">🗂️ 本项目已开源 · 欢迎 Star、Fork 与交流</div>
-  <div class="btn-group">
-    <a class="btn" href="https://github.com/2192735223/qijizhixing" target="_blank" rel="noopener">
-      <span class="ic">📂</span>
-      <span>查看项目源码</span>
+  <!-- ===== 顶部题签 ===== -->
+  <div class="topbar">
+    <a class="brand" href="./" aria-label="齐迹智行主页">
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 12c0-2.8 2.2-5 5-5M36 12c0-2.8-2.2-5-5-5"/><path d="M8 12h32"/><path d="M10.5 12c.8 7.5 2.6 12.5 5 16h17c2.4-3.5 4.2-8.5 5-16"/><path d="M16 28c.4 4.5-.6 8.5-2 11.5M24 28v11.5M32 28c-.4 4.5.6 8.5 2 11.5"/></svg>
+      <span>齐迹智行</span>
     </a>
+    <span class="tag">暑期社会实践 · 2026</span>
   </div>
-</div>
 
-<footer>
-  <div class="seal"></div>
-  <div class="footer-links">
-    <a href="https://sketchfab.com" target="_blank" rel="noopener">Sketchfab</a>
-    <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a>
-    <a href="https://polyhaven.com" target="_blank" rel="noopener">Poly Haven</a>
-  </div>
-  <div class="copyright">齐迹智行实践团 · 山东理工大学 · 2026</div>
-</footer>
+  <!-- ===== Hero ===== -->
+  <header class="hero">
+    <p class="overline">山东理工大学 · 齐迹智行实践团</p>
+    <h1 aria-label="齐迹智行"><span class="char">齐</span><span class="char">迹</span><span class="char">智</span><span class="char">行</span></h1>
+    <div class="divider" aria-hidden="true"><span class="gem"></span></div>
+    <p class="slogan">数字赋能齐文脉 · <em>青春传承齐风骨</em></p>
+    <span class="seal" aria-hidden="true">齐迹</span>
+    <p class="meta">以 AR / 3D / 互动答题，重走一段齐国文明</p>
+    <div class="scroll-cue" aria-hidden="true"><span class="line"></span>向下探索</div>
+  </header>
+
+  <main>
+    <!-- ===== 展陈 ===== -->
+    <section class="exhibit" aria-labelledby="exh-title">
+      <div class="sec-head">
+        <p class="kicker">EXHIBITS</p>
+        <h2 id="exh-title">扫码开启 <span>六段齐文化之旅</span></h2>
+        <p class="sub">六个独立模块 · 即扫即用 · 无需安装</p>
+      </div>
+
+      <div class="usage" role="note">
+        <span class="chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>
+          手机访问 · <b>点按卡片</b>直达
+        </span>
+        <span class="chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          大屏 / 投屏 · <b>扫码进入</b>
+        </span>
+      </div>
+
+      <!-- 镇馆之宝：AR 青铜鼎 -->
+      <a class="featured reveal" href="ar-bronze/" target="_blank" rel="noopener">
+        <div class="row">
+          <div class="info">
+            <p class="no">其一 · 镇馆之宝</p>
+            <h3>AR 青铜鼎 <span class="badge">WebAR · 真 AR</span></h3>
+            <p>打开摄像头，对准 Hiro 标识卡，两千五百年前的齐国青铜鼎将悬浮于眼前——支持旋转、缩放与细节观察。</p>
+            <span class="feat-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4.5"/><path d="M12 16h.01"/></svg>
+              首次使用需允许摄像头权限 · 页面内可打印标识
+            </span>
+            <span class="go">进入 AR 体验
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg>
+            </span>
+          </div>
+          <div>
+            <div class="qr-frame"><div class="qr" id="qr0"></div></div>
+            <p class="qr-note">扫码进入 AR</p>
+          </div>
+        </div>
+      </a>
+
+      <!-- 其余五件展品 -->
+      <div class="list">
+        <a class="item reveal" href="gu-city/" target="_blank" rel="noopener">
+          <span class="ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V9l2-1.5V5h2v2h2V5h2v2h2V5h2v2.5L19 9v12"/><path d="M10 21v-4a2 2 0 0 1 4 0v4"/></svg>
+          </span>
+          <span class="txt">
+            <span class="meta-line"><span class="no">其二</span><span class="name">齐国故城</span><span class="badge">3D 复原</span></span>
+            <p>程序化复原临淄齐国故城：大城小城、桓公台宫殿、市集与淄河，指尖旋转俯瞰千年都邑。</p>
+          </span>
+          <span>
+            <span class="qr-frame"><span class="qr" id="qr1"></span></span>
+            <span class="qr-note">扫码复原故城</span>
+          </span>
+        </a>
+
+        <a class="item reveal" href="guanzhong/" target="_blank" rel="noopener">
+          <span class="ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h11a2 2 0 0 1 2 2v1.5c0 .8-.7 1.5-1.5 1.5S17 7.3 17 6.5V6H7v12h10v-.5c0-.8.7-1.5 1.5-1.5s1.5.7 1.5 1.5V19a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M9 9h5M9 12.5h7"/></svg>
+          </span>
+          <span class="txt">
+            <span class="meta-line"><span class="no">其三</span><span class="name">管仲改革</span><span class="badge">时间轴</span></span>
+            <p>从拜相到葵丘会盟：盐铁专营、四民分业、九府圜法，看一代名相如何「不加赋而国用足」。</p>
+          </span>
+          <span>
+            <span class="qr-frame"><span class="qr" id="qr2"></span></span>
+            <span class="qr-note">扫码读懂改革</span>
+          </span>
+        </a>
+
+        <a class="item reveal" href="jixia/" target="_blank" rel="noopener">
+          <span class="ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9.5L12 4l9.5 5.5"/><path d="M5 9.5V19M19 9.5V19M8.5 19v-5.5a3.5 3.5 0 0 1 7 0V19"/><path d="M2.5 21.5h19"/></svg>
+          </span>
+          <span class="txt">
+            <span class="meta-line"><span class="no">其四</span><span class="name">稷下学宫</span><span class="badge">答题互动</span></span>
+            <p>世界最早的官办高等学府：十道题带你重温百家争鸣，答完即得「知识小达人」印记。</p>
+          </span>
+          <span>
+            <span class="qr-frame"><span class="qr" id="qr3"></span></span>
+            <span class="qr-note">扫码参与答题</span>
+          </span>
+        </a>
+
+        <a class="item reveal" href="cuju/" target="_blank" rel="noopener">
+          <span class="ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3c-2.5 2.5-2.5 5.5 0 9s2.5 6.5 0 9"/><path d="M3.5 9.5c3 1 5.5 1 8.5-1.5M20.5 9.5c-3 1-5.5 1-8.5-1.5" transform="translate(0 6)"/></svg>
+          </span>
+          <span class="txt">
+            <span class="meta-line"><span class="no">其五</span><span class="name">蹴鞠</span><span class="badge">点击互动</span></span>
+            <p>足球起源于战国齐都临淄。点按屏幕踢出一鞠，命中风流眼即为「过眼」，看看你能几连中。</p>
+          </span>
+          <span>
+            <span class="qr-frame"><span class="qr" id="qr4"></span></span>
+            <span class="qr-note">扫码来一鞠</span>
+          </span>
+        </a>
+
+        <a class="item reveal" href="youth/" target="_blank" rel="noopener">
+          <span class="ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5.5"/><path d="M12 6.5l.9 1.8 2 .3-1.45 1.4.35 2-1.8-.95-1.8.95.35-2L9.1 8.6l2-.3L12 6.5Z"/><path d="M8.8 13.5L7 21l5-2.6L17 21l-1.8-7.5"/></svg>
+          </span>
+          <span class="txt">
+            <span class="meta-line"><span class="no">其六</span><span class="name">青春传承</span><span class="badge">电子证书</span></span>
+            <p>留下姓名，即刻生成专属「齐文化传承使者」古风电子证书，可保存分享，见证这一程。</p>
+          </span>
+          <span>
+            <span class="qr-frame"><span class="qr" id="qr5"></span></span>
+            <span class="qr-note">扫码领取证书</span>
+          </span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== 开源 ===== -->
+    <section class="oss reveal" aria-label="开源信息">
+      <a class="card" href="https://github.com/2192735223/qijizhixing" target="_blank" rel="noopener">
+        <svg class="mark" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        <span class="txt">
+          <b>项目已开源</b>
+          <span>纯前端实现，零后端依赖 · 欢迎 Star、Fork 与交流</span>
+        </span>
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg>
+      </a>
+    </section>
+  </main>
+
+  <!-- ===== 页脚 ===== -->
+  <footer>
+    <span class="f-seal" aria-hidden="true">齐迹</span>
+    <div class="links">
+      <a href="https://sketchfab.com" target="_blank" rel="noopener">Sketchfab</a>
+      <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a>
+      <a href="https://polyhaven.com" target="_blank" rel="noopener">Poly Haven</a>
+    </div>
+    <p class="copy"><b>齐迹智行实践团</b> · 山东理工大学 · 2026 暑期社会实践</p>
+  </footer>
+
+</div>
 
 <script src="https://cdn.bootcdn.net/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='libs/qrcode.min.js'}"></script>
 <script>
 (function () {
+  /* ---------- 二维码：URL 动态计算，换域名自动适配 ---------- */
   var baseUrl = location.origin + location.pathname.replace(/\/[^/]*$/, "");
   var pages = [
     baseUrl + "/ar-bronze/",
@@ -283,49 +460,55 @@ footer .copyright{font-size:.55rem;color:#2a1a10;letter-spacing:1px}
     baseUrl + "/cuju/",
     baseUrl + "/youth/"
   ];
-  function fallbackQR(c, size, idx) {
-    var ctx = c.getContext("2d");
-    ctx.fillStyle = "#f5f0e8";
-    ctx.fillRect(0, 0, size, size);
-    ctx.fillStyle = "#333";
-    ctx.font = "10px sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText("QR " + (idx + 1), size / 2, size / 2 + 3);
+
+  function fallbackQR(container, size, idx) {
+    var cv = document.createElement('canvas');
+    cv.width = size; cv.height = size;
+    var ctx = cv.getContext('2d');
+    ctx.fillStyle = '#faf7f0'; ctx.fillRect(0, 0, size, size);
+    ctx.fillStyle = '#333'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('QR ' + (idx + 1), size / 2, size / 2 + 3);
+    container.innerHTML = '';
+    container.appendChild(cv);
   }
+
   function makeQR(id, text, size, idx) {
     var c = document.getElementById(id);
     if (!c) return;
     try {
-      new QRCode(c, { text: text, width: size, height: size, colorDark: "#1a1209", colorLight: "#f5f0e8" });
-      var child = c.querySelector('canvas, img');
-      if (child) {
-        child.style.width = size + 'px';
-        child.style.height = size + 'px';
-      }
+      new QRCode(c, { text: text, width: size, height: size, colorDark: '#1a1209', colorLight: '#faf7f0' });
     } catch (e) {
       fallbackQR(c, size, idx);
     }
   }
-  if (location.protocol === "file:") {
-    document.querySelectorAll(".qr").forEach(function (e) {
-      e.innerHTML = '<div style="font-size:.65rem;color:#1a1209;background:#f5f0e8;padding:.5rem;border-radius:4px">需 HTTP 服务</div>';
+
+  if (location.protocol === 'file:') {
+    document.querySelectorAll('.qr').forEach(function (e) {
+      e.innerHTML = '<span class="qr-file">需 HTTP<br>服务预览</span>';
     });
   } else {
     setTimeout(function () {
-      pages.forEach(function (u, i) { makeQR("qr" + i, u, 80, i); });
+      var sizes = [118, 92, 92, 92, 92, 92];
+      pages.forEach(function (u, i) { makeQR('qr' + i, u, sizes[i], i); });
     }, 200);
   }
 
-  var observer = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('reveal');
-      }
+  /* ---------- 进场渐显 ---------- */
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var targets = document.querySelectorAll('.reveal');
+  if (reduced || !('IntersectionObserver' in window)) {
+    targets.forEach(function (el) { el.classList.add('in'); });
+  } else {
+    var ob = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('in'); ob.unobserve(en.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -4% 0px' });
+    targets.forEach(function (el, i) {
+      el.style.transitionDelay = (i % 4) * 60 + 'ms';
+      ob.observe(el);
     });
-  }, { threshold: 0.12 });
-  document.querySelectorAll('.artifact-grid .card-wrap').forEach(function(el) {
-    observer.observe(el);
-  });
+  }
 })();
 </script>
 </body>

@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 <title>管仲改革 · 齐迹智行</title>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -15,7 +15,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .hero .emblem{font-size:2.8rem;display:block;margin-bottom:.3rem;filter:drop-shadow(0 0 30px rgba(205,127,50,.2));animation:floatEmblem 4s ease-in-out infinite}
 @keyframes floatEmblem{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 .hero h1{font-size:1.6rem;font-weight:800;color:#d4c5a9;letter-spacing:8px;text-shadow:0 0 40px rgba(205,127,50,.12)}
-.hero .sub{font-size:.65rem;color:#4a3a28;margin-top:.5rem;letter-spacing:2px;border:1px solid rgba(74,58,40,.12);display:inline-block;padding:.12rem .7rem;border-radius:10px}
+.hero .sub{font-size:.65rem;color:#a08e6d;margin-top:.5rem;letter-spacing:2px;border:1px solid rgba(160,142,109,.25);display:inline-block;padding:.12rem .7rem;border-radius:10px}
 .hero .divider{width:40px;height:1.5px;background:linear-gradient(90deg,transparent,rgba(205,127,50,.3),transparent);margin:.6rem auto 0}
 
 /* ===== Timeline cards (full-width, dramatic) ===== */
@@ -28,19 +28,22 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .node .dot::after{content:'';position:absolute;top:2px;left:2px;width:4px;height:4px;border-radius:50%;background:rgba(205,127,50,.4);transition:all .4s ease}
 .node.open .dot{background:rgba(205,127,50,.25);border-color:#cd7f32;box-shadow:0 0 16px rgba(205,127,50,.2)}
 .node.open .dot::after{background:#cd7f32;box-shadow:0 0 8px rgba(205,127,50,.4)}
-.node .time{font-size:.6rem;color:#4a3a28;letter-spacing:1px;margin-bottom:.1rem;padding-left:2.5rem;padding-top:.5rem;transition:color .3s ease}
-.node.open .time{color:#6a5a40}
+.node .time{font-size:.6rem;color:#a08e6d;letter-spacing:1px;margin-bottom:.1rem;padding-left:2.5rem;padding-top:.5rem;transition:color .3s ease}
+.node.open .time{color:#c4a970}
 .node .title{font-size:.9rem;font-weight:600;color:#b8a888;letter-spacing:1px;padding-left:2.5rem;padding-right:.9rem;transition:color .3s ease}
 .node.open .title{color:#e8c97a}
 .node .detail{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.23,1,.32,1),padding .45s ease;padding:0 .9rem;font-size:.8rem;color:#6a5a40;line-height:1.8;border-top:1px solid transparent;transition:max-height .45s cubic-bezier(.23,1,.32,1),padding .45s ease,border-color .45s ease}
 .node.open .detail{max-height:500px;padding:.8rem .9rem 1rem;border-top-color:rgba(74,58,40,.1)}
 
 /* ===== Tip & Footer ===== */
-.tip{position:relative;z-index:1;text-align:center;font-size:.6rem;color:#3a2a1a;padding:.5rem 0 1.5rem;letter-spacing:1px}
+.tip{position:relative;z-index:1;text-align:center;font-size:.6rem;color:#8d7d60;padding:.5rem 0 1.5rem;letter-spacing:1px}
 .tip::before{content:'👆 '}
-footer{position:relative;z-index:1;text-align:center;padding:1.5rem 1rem calc(1rem + env(safe-area-inset-bottom,0px));font-size:.55rem;color:#2a1a10;border-top:1px solid rgba(74,58,40,.06);margin-top:.5rem;letter-spacing:1px}
-.back{position:fixed;bottom:calc(1rem + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);color:#4a3a28;text-decoration:none;font-size:.7rem;border:1px solid rgba(74,58,40,.15);padding:.35rem 1.2rem;border-radius:20px;z-index:10;transition:all .3s ease;background:rgba(8,6,4,.8);backdrop-filter:blur(4px)}
+footer{position:relative;z-index:1;text-align:center;padding:1.5rem 1rem calc(1.5rem + env(safe-area-inset-bottom,0px));font-size:.55rem;color:#8d7d60;border-top:1px solid rgba(74,58,40,.06);margin-top:.5rem;letter-spacing:1px}
+.back{position:fixed;bottom:calc(1rem + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);color:#a08e6d;text-decoration:none;font-size:.7rem;border:1px solid rgba(160,142,109,.25);padding:.35rem 1.2rem;border-radius:20px;z-index:10;transition:all .3s ease;background:rgba(8,6,4,.8);backdrop-filter:blur(4px)}
 .back:active{color:#cd7f32;border-color:rgba(205,127,50,.2);background:rgba(20,16,12,.9)}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
 </style>
 </head>
 <body>
