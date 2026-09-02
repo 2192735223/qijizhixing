@@ -107,21 +107,12 @@ a{color:inherit}
   animation:sealIn .5s cubic-bezier(.34,1.56,.64,1) .9s both;
 }
 @keyframes sealIn{from{opacity:0;transform:rotate(5deg) scale(1.5)}to{opacity:1;transform:rotate(5deg) scale(1)}}
-.hero .meta{margin-top:var(--space-5);font-size:.64rem;color:var(--t3);letter-spacing:2px}
-.hero .scroll-cue{
-  display:flex;flex-direction:column;align-items:center;gap:6px;
-  margin-top:var(--space-6);
-  font-size:.58rem;letter-spacing:3px;color:var(--t3);
-}
-.hero .scroll-cue .line{width:1px;height:30px;background:linear-gradient(180deg,var(--line-strong),transparent);position:relative;overflow:hidden}
-.hero .scroll-cue .line::after{content:'';position:absolute;top:-8px;left:0;width:1px;height:8px;background:var(--gold);animation:drip 2.2s ease-in-out infinite}
-@keyframes drip{0%{top:-8px;opacity:1}70%{top:30px;opacity:.9}100%{top:30px;opacity:0}}
+.hero .meta{margin-top:var(--space-6);font-size:.64rem;color:var(--t3);letter-spacing:2px}
 
 /* ===== 展陈区块 ===== */
 .exhibit{padding:var(--space-9) 0 var(--space-6)}
 .sec-head{text-align:center;margin-bottom:var(--space-6)}
-.sec-head .kicker{font-size:.6rem;letter-spacing:6px;color:var(--t4);text-transform:uppercase;margin-bottom:var(--space-2)}
-.sec-head h2{font-family:var(--serif);font-size:clamp(1.15rem,4.4vw,1.5rem);font-weight:700;color:var(--t1);letter-spacing:6px}
+.sec-head h2{font-family:var(--serif);font-size:clamp(1.2rem,4.6vw,1.55rem);font-weight:700;color:var(--t1);letter-spacing:6px}
 .sec-head h2 span{color:var(--gold-hi)}
 .sec-head .sub{font-size:.7rem;color:var(--t3);margin-top:var(--space-2);letter-spacing:1px}
 /* 使用场景提示 */
@@ -277,7 +268,6 @@ footer .copy b{color:var(--t3);font-weight:600}
   .hero h1 .char{opacity:1;transform:none}
   .hero .seal{opacity:1}
   .reveal{opacity:1;transform:none}
-  .hero .scroll-cue .line::after{display:none}
 }
 </style>
 </head>
@@ -302,14 +292,12 @@ footer .copy b{color:var(--t3);font-weight:600}
     <p class="slogan">数字赋能齐文脉 · <em>青春传承齐风骨</em></p>
     <span class="seal" aria-hidden="true">齐迹</span>
     <p class="meta">以 AR / 3D / 互动答题，重走一段齐国文明</p>
-    <div class="scroll-cue" aria-hidden="true"><span class="line"></span>向下探索</div>
   </header>
 
   <main>
     <!-- ===== 展陈 ===== -->
     <section class="exhibit" aria-labelledby="exh-title">
       <div class="sec-head">
-        <p class="kicker">EXHIBITS</p>
         <h2 id="exh-title">扫码开启 <span>六段齐文化之旅</span></h2>
         <p class="sub">六个独立模块 · 即扫即用 · 无需安装</p>
       </div>
