@@ -45,13 +45,19 @@ body{
   -webkit-tap-highlight-color:transparent;
   line-height:1.6;
 }
-/* 美术馆射灯：顶部金色氛围 + 边缘压暗 */
+/* 美术馆射灯 + 靑铜回纹底纹：从 subject 世界（靑铜/齐文化）取纹理 */
 body::before{
   content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background:
-    radial-gradient(ellipse 120% 46% at 50% -8%,rgba(212,160,76,.10) 0%,transparent 62%),
-    radial-gradient(ellipse 70% 40% at 88% 8%,rgba(192,69,47,.045) 0%,transparent 55%),
-    radial-gradient(ellipse 140% 120% at 50% 50%,transparent 55%,rgba(0,0,0,.42) 100%);
+    /* 顶部聚光灯锥，聚焦主展品 */
+    radial-gradient(ellipse 58% 34% at 50% 6%,rgba(212,160,76,.16) 0%,transparent 70%),
+    radial-gradient(ellipse 95% 42% at 50% -10%,rgba(212,160,76,.07) 0%,transparent 60%),
+    radial-gradient(ellipse 70% 40% at 88% 8%,rgba(192,69,47,.05) 0%,transparent 55%),
+    /* 淡靑铜云雷回纹（回字纹），来自靑铜器世界 */
+    repeating-linear-gradient(45deg,rgba(200,150,80,.028) 0 2px,transparent 2px 18px),
+    repeating-linear-gradient(-45deg,rgba(200,150,80,.022) 0 2px,transparent 2px 18px),
+    /* 边缘压暗 */
+    radial-gradient(ellipse 140% 120% at 50% 50%,transparent 55%,rgba(0,0,0,.46) 100%);
 }
 ::selection{background:rgba(212,160,76,.30);color:var(--t1)}
 a{color:inherit}
