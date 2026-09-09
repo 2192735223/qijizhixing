@@ -16,7 +16,7 @@
   --line:rgba(205,143,63,.22);
   --line-dim:rgba(205,143,63,.12);
   --t1:#ede3cc; --t2:#c9b995; --t3:#a08e6d;
-  --gold:#cd8f3f; --gold-hi:#e8c97a全集族
+  --gold:#cd8f3f; --gold-hi:#e8c97a;
   --ok:#8fb573; --err:#d97e5f;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -220,8 +220,8 @@ body.mode-gate .status,body.mode-gate .back,body.mode-gate .gesture,body.mode-ga
     return g;
   }
 
-  // ---------- 资源加载回退（CDN → 本地 gz → 本地 obj；单源 12s 超时） ----------
-  var MODEL_TIMEOUT = 12000;
+  // ---------- 资源加载（本地与 CDN 并行竞速，谁快用谁；兜底本地明文） ----------
+  var MODEL_TIMEOUT = 8000;
   function decompressGzip(buf) { return new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'))).text(); }
   function fetchTO(url) {
     if (!window.AbortController) return fetch(url);
@@ -229,21 +229,43 @@ body.mode-gate .status,body.mode-gate .back,body.mode-gate .gesture,body.mode-ga
     var timer = setTimeout(function () { ctrl.abort(); }, MODEL_TIMEOUT);
     return fetch(url, { signal: ctrl.signal }).finally(function () { clearTimeout(timer); });
   }
+  function fromGz(url) {
+    return fetchTO(url).then(function (r) {
+      if (!r.ok) throw new Error('http ' + r.status);
+      return r.arrayBuffer().then(decompressGzip);
+    });
+  }
+  function fromPlain(url) {
+    return fetchTO(url).then(function (r) {
+      if (!r.ok) throw new Error('http ' + r.status);
+      return r.text();
+    });
+  }
   function loadModelData() {
-    var attempts = [];
-    if (window.DecompressionStream) {
-      attempts.push(function () { return fetchTO(CDN + 'ding.obj.gz').then(function (r) { if (!r.ok) throw 0; return r.arrayBuffer().then(decompressGzip); }); });
-      attempts.push(function () { return fetchTO('assets/ding.obj.gz').then(function (r) { if (!r.ok) throw 0; return r.arrayBuffer().then(decompressGzip); }); });
+    // 本地同源稳定可达（国内友好），CDN 并行竞速：不再傻等 CDN 超时
+    if (window.DecompressionStream && typeof Promise.any === 'function') {
+      return Promise.any([fromGz('assets/ding.obj.gz'), fromGz(CDN + 'ding.obj.gz')])
+        .catch(function () { return fromPlain('assets/ding.obj'); });
     }
-    attempts.push(function () { return fetchTO('assets/ding.obj').then(function (r) { if (!r.ok) throw 0; return r.text(); }); });
+    // 老浏览器兜底：本地优先顺序链
+    var attempts = window.DecompressionStream
+      ? [function () { return fromGz('assets/ding.obj.gz'); }, function () { return fromGz(CDN + 'ding.obj.gz'); }]
+      : [];
+    attempts.push(function () { return fromPlain('assets/ding.obj'); });
     var i = 0;
     function tryNext() { return attempts[i++]().catch(function (e) { if (i < attempts.length) return tryNext(); throw e; }); }
     return tryNext();
   }
   function bronzeMaterial() {
     var mat = new THREE.MeshStandardMaterial({ color: 0x8a6a42, metalness: 0.35, roughness: 0.5 });
-    new THREE.TextureLoader().load(CDN + 'ding_diffuse.jpg', function (t) { mat.map = t; mat.needsUpdate = true; }, undefined, function () {
-      new THREE.TextureLoader().load('assets/ding_diffuse.jpg', function (t) { mat.map = t; mat.needsUpdate = true; }, undefined, function () { mat.color.set(0x6b4423); mat.metalness = 0.6; mat.roughness = 0.4; });
+    function loadTex(url, onFail) {
+      new THREE.TextureLoader().load(url, function (t) { mat.map = t; mat.needsUpdate = true; }, undefined, onFail);
+    }
+    // 贴图小（34KB），本地同源优先，CDN 仅回退
+    loadTex('assets/ding_diffuse.jpg', function () {
+      loadTex(CDN + 'ding_diffuse.jpg', function () {
+        mat.color.set(0x6b4423); mat.metalness = 0.6; mat.roughness = 0.4;
+      });
     });
     return mat;
   }
@@ -297,9 +319,12 @@ body.mode-gate .status,body.mode-gate .back,body.mode-gate .gesture,body.mode-ga
     resize();
     window.addEventListener('resize', resize);
 
-    var start = performance.now();
     setStatus('正在唤醒青铜鼎…', 'load');
+    var slowTip = setTimeout(function () {
+      if (!loaded) setStatus('网络较慢 · 正在从备用源加载…', 'load');
+    }, 8000);
     buildMesh(1.0, function (err, mesh) {
+      clearTimeout(slowTip);
       if (err) { setStatus('模型加载失败，请检查网络', 'err'); return; }
       root.add(mesh);
       loaded = true;
@@ -350,12 +375,12 @@ function applyCamera() {
     var w = window.innerWidth, h = window.innerHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h; camera.updateProjectionMatrix();
-    // 模型高度约占屏高 55%（乘用户缩放 zoom）：模型最大边归一化为 1.0
+    // 模型最大边归一化为 1.0；让模型高占可视高度约 55%（÷用户缩放）
+    // 可视高 = 2·dist·tan(fov/2) → dist = 1.0 / (ratio·2·tan(fov/2))
     var halfFov = THREE.MathUtils.degToRad(camera.fov / 2);
-    var targetH = h * 0.55 / zoom;
-    var dist = (1.0 / (2 * Math.tan(halfFov))) * targetH;
-    camera.position.set(0, 0.05, dist);
-    camera.lookAt(0, 0.08, 0); // 模型中心稍偏上，留出顶部提示空间
+    var dist = 1.0 / (0.55 * 2 * Math.tan(halfFov)) / zoom;
+    camera.position.set(0, 0.15, dist);
+    camera.lookAt(0, 0.42, 0); // 相机略高俯视模型中部：模型居中偏下，顶部留状态栏空间
   }
   function resize() { applyCamera(); }
 
